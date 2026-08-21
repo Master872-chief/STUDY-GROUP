@@ -823,78 +823,82 @@
 
       msgEntries.sort((a, b) => (a[1].timestamp || 0) - (b[1].timestamp || 0));
 
-      feed.innerHTML = msgEntries.map(([key, m]) => {
-        const isMe = state.currentUser && m.sender === state.currentUser.nickname;
-        const canDelete = isMe || (state.currentUser && state.currentUser.isAdmin);
-        const isPinned = m.pinned && (now - (m.pinnedAt || 0) < 86400000);
+      feed.innerHTML = `
+        <div class="max-w-3xl mx-auto w-full space-y-2">
+          ${msgEntries.map(([key, m]) => {
+            const isMe = state.currentUser && m.sender === state.currentUser.nickname;
+            const canDelete = isMe || (state.currentUser && state.currentUser.isAdmin);
+            const isPinned = m.pinned && (now - (m.pinnedAt || 0) < 86400000);
 
-        if (m.type === 'text') {
-          return `
-            <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-              <div class="max-w-[75%] sm:max-w-xs px-3 py-1.5 rounded-xl text-[12px] ${isMe ? 'bg-waDarkBubble text-white rounded-br-sm' : 'bg-white dark:bg-waDarkIncoming text-gray-800 dark:text-gray-100 rounded-bl-sm shadow-sm'}">
-                <div class="flex items-center justify-between gap-2 mb-0.5">
-                  ${!isMe ? `<p class="text-[10px] font-bold text-waGreen flex items-center gap-1">${m.sender} ${m.isAdmin ? '<span class="bg-red-600 text-white text-[7px] px-1 rounded">ADMIN</span>' : ''}</p>` : (m.isAdmin ? '<p class="text-[10px] font-bold text-red-300">ADMIN</p>' : '')}
-                  <div class="flex items-center gap-1.5">
-                    <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-300 hover:text-waLightGreen'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
-                    ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-300 hover:text-red-400 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
+            if (m.type === 'text') {
+              return `
+                <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                  <div class="max-w-[75%] sm:max-w-xs px-3 py-1.5 rounded-xl text-[12px] ${isMe ? 'bg-waDarkBubble text-white rounded-br-sm' : 'bg-white dark:bg-waDarkIncoming text-gray-800 dark:text-gray-100 rounded-bl-sm shadow-sm'}">
+                    <div class="flex items-center justify-between gap-2 mb-0.5">
+                      ${!isMe ? `<p class="text-[10px] font-bold text-waGreen flex items-center gap-1">${m.sender} ${m.isAdmin ? '<span class="bg-red-600 text-white text-[7px] px-1 rounded">ADMIN</span>' : ''}</p>` : (m.isAdmin ? '<p class="text-[10px] font-bold text-red-300">ADMIN</p>': '')}
+                      <div class="flex items-center gap-1.5">
+                        <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-300 hover:text-waLightGreen'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
+                        ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-300 hover:text-red-400 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
+                      </div>
+                    </div>
+                    <p class="leading-relaxed break-words">${m.text}</p>
+                    <p class="text-[8px] text-right opacity-60 mt-0.5">${m.time}</p>
                   </div>
                 </div>
-                <p class="leading-relaxed break-words">${m.text}</p>
-                <p class="text-[8px] text-right opacity-60 mt-0.5">${m.time}</p>
-              </div>
-            </div>
-          `;
-        } else if (m.type === 'problem') {
-          return `
-            <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} my-1">
-              <div class="max-w-[85%] sm:max-w-sm bg-white dark:bg-waDarkIncoming rounded-xl p-2.5 shadow-sm border border-gray-200 dark:border-gray-700/50 space-y-2 ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}">
-                <div class="flex justify-between items-center">
-                  <span class="text-[8px] uppercase font-bold px-1.5 py-0.5 rounded bg-waGreen/10 text-waGreen">${m.subject}</span>
-                  <div class="flex items-center gap-1.5">
-                    <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-400 hover:text-waLightGreen'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
-                    ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-400 hover:text-red-500 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
+              `;
+            } else if (m.type === 'problem') {
+              return `
+                <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} my-1">
+                  <div class="max-w-[85%] sm:max-w-sm bg-white dark:bg-waDarkIncoming rounded-xl p-2.5 shadow-sm border border-gray-200 dark:border-gray-700/50 space-y-2 ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}">
+                    <div class="flex justify-between items-center">
+                      <span class="text-[8px] uppercase font-bold px-1.5 py-0.5 rounded bg-waGreen/10 text-waGreen">${m.subject}</span>
+                      <div class="flex items-center gap-1.5">
+                        <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-400 hover:text-waLightGreen'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
+                        ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-400 hover:text-red-500 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
+                      </div>
+                    </div>
+
+                    <p class="text-[12px] text-gray-800 dark:text-gray-100 font-medium leading-snug">${m.text}</p>
+
+                    ${m.imageUrl ? `
+                      <div class="w-full max-h-48 overflow-hidden rounded-lg bg-black/30 cursor-pointer" onclick="openModal('${m.imageUrl}')">
+                        <img src="${m.imageUrl}" class="w-full h-48 object-cover hover:scale-105 transition duration-200">
+                      </div>
+                    ` : ''}
+
+                    <div class="flex items-center justify-between text-[9px] bg-gray-50 dark:bg-waDarkBg p-1.5 rounded-lg border border-gray-100 dark:border-gray-800">
+                      <div class="flex items-center space-x-1.5">
+                        <span class="${m.status==='unsolved'?'text-amber-500 font-bold':'text-gray-500'}"><i class="fa-solid fa-circle-dot"></i> Unsolved</span>
+                        
+                        ${m.status==='solving' || m.status==='solved' ? `<span class="text-gray-500">•</span>` : ''}
+                        
+                        ${m.status==='solving' ? `
+                        <span class="text-blue-500 font-bold flex items-center gap-1">
+                          <span class="w-3.5 h-3.5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[7px]" title="${m.solvingUser ? m.solvingUser.name : ''}">${m.solvingUser ? m.solvingUser.initial : ''}</span>
+                          Solving
+                        </span>` : ''}
+                        
+                        ${m.status==='solved' ? `
+                        <span class="text-green-500 font-bold flex items-center gap-1">
+                          <span class="w-3.5 h-3.5 rounded-full bg-green-500 text-white flex items-center justify-center text-[7px]" title="${m.solvedUser ? m.solvedUser.name : ''}">${m.solvedUser ? m.solvedUser.initial : ''}</span>
+                          Solved
+                        </span>` : ''}
+                      </div>
+
+                      <div class="flex gap-1 ml-2">
+                        ${m.status === 'unsolved' ? `<button onclick="setSolving('${key}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow transition">Solving</button>`: ''}
+                        ${m.status === 'solving' ? `<button onclick="setSolved('${key}')" class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white font-semibold rounded shadow transition">Mark Solved</button>`: ''}
+                      </div>
+                    </div>
+
+                    <p class="text-[8px] text-right opacity-60">${m.time}</p>
                   </div>
                 </div>
-
-                <p class="text-[12px] text-gray-800 dark:text-gray-100 font-medium leading-snug">${m.text}</p>
-
-                ${m.imageUrl ? `
-                  <div class="w-full max-h-48 overflow-hidden rounded-lg bg-black/30 cursor-pointer" onclick="openModal('${m.imageUrl}')">
-                    <img src="${m.imageUrl}" class="w-full h-48 object-cover hover:scale-105 transition duration-200">
-                  </div>
-                ` : ''}
-
-                <div class="flex items-center justify-between text-[9px] bg-gray-50 dark:bg-waDarkBg p-1.5 rounded-lg border border-gray-100 dark:border-gray-800">
-                  <div class="flex items-center space-x-1.5">
-                    <span class="${m.status==='unsolved'?'text-amber-500 font-bold':'text-gray-500'}"><i class="fa-solid fa-circle-dot"></i> Unsolved</span>
-                    
-                    ${m.status==='solving' || m.status==='solved' ? `<span class="text-gray-500">•</span>` : ''}
-                    
-                    ${m.status==='solving' ? `
-                    <span class="text-blue-500 font-bold flex items-center gap-1">
-                      <span class="w-3.5 h-3.5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[7px]" title="${m.solvingUser ? m.solvingUser.name : ''}">${m.solvingUser ? m.solvingUser.initial : ''}</span>
-                      Solving
-                    </span>` : ''}
-                    
-                    ${m.status==='solved' ? `
-                    <span class="text-green-500 font-bold flex items-center gap-1">
-                      <span class="w-3.5 h-3.5 rounded-full bg-green-500 text-white flex items-center justify-center text-[7px]" title="${m.solvedUser ? m.solvedUser.name : ''}">${m.solvedUser ? m.solvedUser.initial : ''}</span>
-                      Solved
-                    </span>` : ''}
-                  </div>
-
-                  <div class="flex gap-1 ml-2">
-                    ${m.status === 'unsolved' ? `<button onclick="setSolving('${key}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow transition">Solving</button>`: ''}
-                    ${m.status === 'solving' ? `<button onclick="setSolved('${key}')" class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white font-semibold rounded shadow transition">Mark Solved</button>`: ''}
-                  </div>
-                </div>
-
-                <p class="text-[8px] text-right opacity-60">${m.time}</p>
-              </div>
-            </div>
-          `;
-        }
-      }).join('');
+              `;
+            }
+          }).join('')}
+        </div>
+      `;
 
       feed.scrollTop = feed.scrollHeight;
     }
