@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Matrix Team - Portal & Chat Rooms</title>
   
+  <!-- Browser Tab Icon (Favicon) -->
+  <link rel="icon" type="image/jpeg" href="matrix-logo.jpg">
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -38,6 +41,28 @@
     body { font-family: 'Inter', sans-serif; transition: font-family 0.3s ease; }
     .custom-scrollbar::-webkit-scrollbar { width: 5px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+
+    /* Chatroom Watermark (Dark & Light Mode) */
+    #chatFeed {
+      position: relative;
+      background-image: url('matrix-logo.jpg');
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: 260px auto;
+      background-attachment: local;
+    }
+    
+    /* Light Mode Watermark Adjustment */
+    body:not(.dark) #chatFeed {
+      background-blend-mode: overlay;
+      background-color: rgba(255, 255, 255, 0.94);
+    }
+    
+    /* Dark Mode Watermark Adjustment */
+    body.dark #chatFeed {
+      background-blend-mode: soft-light;
+      background-color: rgba(18, 18, 18, 0.92);
+    }
   </style>
 </head>
 <body class="bg-gray-200 dark:bg-waDarkBg text-gray-800 dark:text-gray-100 h-screen flex flex-col transition-colors duration-200 overflow-hidden">
@@ -52,100 +77,66 @@
   <div id="authModal" class="fixed inset-0 z-40 bg-waDarkBg/95 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white dark:bg-waDarkPanel border border-gray-200 dark:border-gray-700 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4">
       <div class="text-center space-y-2">
-        <!-- Logo Representation -->
-        <div class="w-16 h-16 bg-gradient-to-tr from-waTeal to-waLightGreen text-white rounded-2xl flex items-center justify-center font-bold text-2xl mx-auto shadow-xl border border-waLightGreen/30">
-          <i class="fa-solid fa-brain text-2xl"></i>
+        <!-- Logo Representation in Authentication Modal -->
+        <div class="mx-auto mb-2">
+            <img src="matrix-logo.jpg" alt="Matrix Logo" class="w-20 h-20 mx-auto object-contain rounded-xl drop-shadow-[0_0_12px_rgba(37,211,102,0.45)]">
         </div>
         <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-wider">MATRIX TEAM</h2>
         <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">KNOWLEDGE | INNOVATION | GROWTH</p>
         <p class="text-xs text-gray-400" id="authSubtitle">Access your account portal</p>
       </div>
 
-      <div id="authError" class="hidden text-red-500 text-xs font-semibold text-center bg-red-50 dark:bg-red-950/50 p-2.5 rounded-xl border border-red-200 dark:border-red-800"></div>
+      <div id="authError" class="hidden bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[11px] p-2 rounded-lg border border-red-200 dark:border-red-800 font-medium text-center"></div>
 
-      <!-- LOGIN VIEW -->
-      <div id="loginView" class="space-y-3.5">
-        <form onsubmit="handleLogin(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Group Nickname</label>
-            <input type="text" id="loginNickname" placeholder="e.g. Axion~7" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
+      <!-- Login View -->
+      <form id="loginView" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Registered Nickname</label>
+          <div class="relative">
+            <i class="fa-solid fa-user absolute left-3 top-3 text-gray-400 text-sm"></i>
+            <input type="text" id="loginNickname" class="w-full bg-gray-50 dark:bg-waDarkBg text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-waGreen focus:ring-1 focus:ring-waGreen transition" placeholder="e.g. axion~7" required>
           </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Password</label>
-            <div class="relative">
-              <input type="password" id="loginPassword" placeholder="Enter your password" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100 pr-10">
-              <button type="button" onclick="togglePasswordVisibility('loginPassword', 'loginPasswordEye')" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
-                <i class="fa-solid fa-eye" id="loginPasswordEye"></i>
-              </button>
-            </div>
-          </div>
-          <button type="submit" class="w-full py-3 bg-waGreen hover:bg-waTeal text-white font-bold text-sm rounded-xl shadow-lg transition duration-200">
-            Log In
-          </button>
-        </form>
-        <div class="text-center pt-2">
-          <p class="text-xs text-gray-500 dark:text-gray-400">Not a member yet?</p>
-          <button onclick="toggleAuthView('register')" class="mt-1 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow transition duration-200">
-            Register Here
-          </button>
         </div>
-      </div>
-
-      <!-- REGISTER VIEW -->
-      <div id="registerView" class="hidden space-y-3">
-        <form onsubmit="handleRegister(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Full Name</label>
-            <input type="text" id="joinFullName" placeholder="e.g. Victor John Mana" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
+        <div>
+          <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Password</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3 top-3 text-gray-400 text-sm"></i>
+            <input type="password" id="loginPassword" class="w-full bg-gray-50 dark:bg-waDarkBg text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg pl-9 pr-10 py-2 text-sm focus:outline-none focus:border-waGreen focus:ring-1 focus:ring-waGreen transition" placeholder="••••••" required>
+            <i class="fa-solid fa-eye absolute right-3 top-3 text-gray-400 cursor-pointer hover:text-waGreen transition text-sm" id="toggleLoginPass" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPass')"></i>
           </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Subject Combination</label>
-            <input type="text" id="joinCombination" placeholder="e.g. PCM, PCB, PGM, EGM" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Preferred Nickname (Group Tag)</label>
-            <input type="text" id="joinNickname" placeholder="e.g. Axion~7" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Email Address</label>
-            <input type="email" id="joinEmail" placeholder="e.g. user@example.com" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Password</label>
-            <div class="relative">
-              <input type="password" id="joinPassword" placeholder="At least 6 characters" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100 pr-10">
-              <button type="button" onclick="togglePasswordVisibility('joinPassword', 'joinPasswordEye')" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
-                <i class="fa-solid fa-eye" id="joinPasswordEye"></i>
-              </button>
-            </div>
-          </div>
-          <button type="submit" class="w-full py-3 bg-waGreen hover:bg-waTeal text-white font-bold text-sm rounded-xl shadow-lg transition duration-200">
-            Register & Enter Portal
-          </button>
-        </form>
-        <div class="text-center pt-1">
-          <p class="text-xs text-gray-500 dark:text-gray-400">Already a member?</p>
-          <button onclick="toggleAuthView('login')" class="mt-1 text-waGreen hover:text-waTeal font-bold text-sm transition duration-200">
-            Click here to Log In
-          </button>
         </div>
-      </div>
-    </div>
-  </div>
+        <button type="submit" class="w-full bg-waGreen hover:bg-waTeal text-white font-bold py-2 rounded-lg text-sm shadow-md transition-all active:scale-95 uppercase tracking-wide">Enter Portal</button>
+        <p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-3">Not a member? <span class="text-waGreen cursor-pointer font-bold hover:underline" onclick="switchAuthView('register')">Request Access</span></p>
+      </form>
 
-  <!-- USER PROFILE MODAL -->
-  <div id="profileModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-waDarkPanel w-full max-w-xs rounded-2xl p-6 shadow-2xl relative text-center border border-gray-200 dark:border-gray-700">
-      <button onclick="closeProfileModal()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition text-lg"><i class="fa-solid fa-xmark"></i></button>
-      <div class="w-16 h-16 mx-auto bg-waGreen text-white rounded-full flex items-center justify-center text-3xl font-bold mb-3 shadow-md" id="profileInit"></div>
-      <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="profileNick"></h3>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mb-2" id="profileName"></p>
-      <div class="mb-5">
-        <span class="text-xs font-bold text-waGreen bg-waGreen/10 px-3 py-1 rounded-full uppercase tracking-wider border border-waGreen/20" id="profileCombo"></span>
-      </div>
-      <button onclick="alert('Follow functionality coming soon!')" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-lg transition duration-200">
-        <i class="fa-solid fa-user-plus mr-1"></i> Follow
-      </button>
+      <!-- Register View -->
+      <form id="registerView" onsubmit="handleRegister(event)" class="space-y-3 hidden">
+        <div>
+          <label class="block text-[10px] font-semibold mb-0.5 text-gray-700 dark:text-gray-300 uppercase">Full Real Name</label>
+          <input type="text" id="joinFullName" class="w-full bg-gray-50 dark:bg-waDarkBg text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1.5 text-xs focus:outline-none focus:border-waGreen focus:ring-1 focus:ring-waGreen transition" required>
+        </div>
+        <div>
+          <label class="block text-[10px] font-semibold mb-0.5 text-gray-700 dark:text-gray-300 uppercase">Subject Combination (e.g. PCM)</label>
+          <input type="text" id="joinCombination" class="w-full bg-gray-50 dark:bg-waDarkBg text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1.5 text-xs focus:outline-none focus:border-waGreen focus:ring-1 focus:ring-waGreen transition" required>
+        </div>
+        <div>
+          <label class="block text-[10px] font-semibold mb-0.5 text-gray-700 dark:text-gray-300 uppercase">Desired Nickname</label>
+          <input type="text" id="joinNickname" class="w-full bg-gray-50 dark:bg-waDarkBg text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1.5 text-xs focus:outline-none focus:border-waGreen focus:ring-1 focus:ring-waGreen transition" required>
+        </div>
+        <div>
+          <label class="block text-[10px] font-semibold mb-0.5 text-gray-700 dark:text-gray-300 uppercase">Email Address</label>
+          <input type="email" id="joinEmail" class="w-full bg-gray-50 dark:bg-waDarkBg text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1.5 text-xs focus:outline-none focus:border-waGreen focus:ring-1 focus:ring-waGreen transition" required>
+        </div>
+        <div>
+          <label class="block text-[10px] font-semibold mb-0.5 text-gray-700 dark:text-gray-300 uppercase">Secure Password</label>
+          <div class="relative">
+            <input type="password" id="joinPassword" class="w-full bg-gray-50 dark:bg-waDarkBg text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md pl-3 pr-8 py-1.5 text-xs focus:outline-none focus:border-waGreen focus:ring-1 focus:ring-waGreen transition" required>
+            <i class="fa-solid fa-eye absolute right-2.5 top-2 text-gray-400 cursor-pointer hover:text-waGreen text-[10px]" id="toggleJoinPass" onclick="togglePasswordVisibility('joinPassword', 'toggleJoinPass')"></i>
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-waGreen hover:bg-waTeal text-white font-bold py-2 rounded-lg text-sm shadow-md transition-all active:scale-95 uppercase tracking-wide mt-2">Join Matrix</button>
+        <p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-2">Already have access? <span class="text-waGreen cursor-pointer font-bold hover:underline" onclick="switchAuthView('login')">Return to Login</span></p>
+      </form>
     </div>
   </div>
 
@@ -156,8 +147,9 @@
         <i class="fa-solid fa-bars"></i>
       </button>
       <div class="flex items-center space-x-3 cursor-pointer" onclick="toggleSidebar()">
-        <div class="w-10 h-10 rounded-xl bg-waLightGreen flex items-center justify-center font-bold text-gray-900 shadow">
-          <i class="fa-solid fa-brain text-lg"></i>
+        <!-- Top Navigation Bar Logo -->
+        <div class="flex items-center justify-center">
+            <img src="matrix-logo.jpg" alt="Matrix Logo" class="w-10 h-10 object-contain rounded-xl shadow">
         </div>
         <div>
           <h1 class="font-bold leading-tight text-base">MATRIX TEAM</h1>
@@ -174,240 +166,232 @@
     </div>
   </header>
 
-  <!-- Main Screen Container (WhatsApp Web 2-Pane Layout) -->
-  <div class="flex flex-1 overflow-hidden relative">
+  <!-- Main Application Area -->
+  <div class="flex-1 flex overflow-hidden relative">
 
-    <!-- Expandable Drawer Sidebar -->
-    <aside id="sidebar" class="w-80 bg-white dark:bg-waDarkPanel border-r border-gray-300 dark:border-gray-700 flex flex-col absolute left-0 top-0 z-40 h-full transition-transform duration-300 transform -translate-x-full shadow-2xl">
+    <!-- Left Sidebar Menu (Sliding over on mobile) -->
+    <aside id="sidebar" class="absolute inset-y-0 left-0 w-80 bg-white dark:bg-waDarkPanel border-r border-gray-200 dark:border-gray-700 flex flex-col z-20 transition-transform duration-300 transform -translate-x-full md:relative md:translate-x-0 shrink-0 shadow-xl md:shadow-none">
       
-      <div class="bg-waTeal dark:bg-waDarkHeader text-white p-4 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-          <div class="w-7 h-7 bg-waLightGreen rounded-lg flex items-center justify-center text-gray-900 font-bold text-xs">
-            <i class="fa-solid fa-brain"></i>
+      <!-- User Mini Profile -->
+      <div class="p-4 bg-gray-50 dark:bg-gray-800/40 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 shrink-0">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-full bg-waGreen flex items-center justify-center text-white font-bold text-lg shadow-sm">
+            <i class="fa-solid fa-user-graduate"></i>
           </div>
-          <h2 class="font-bold text-sm uppercase tracking-wider">Matrix Options</h2>
+          <div>
+            <p class="text-sm font-bold text-gray-800 dark:text-gray-100" id="setProfileNick">User</p>
+            <p class="text-[10px] text-gray-500 dark:text-gray-400" id="setProfileCombo">Combo</p>
+          </div>
         </div>
-        <button onclick="toggleSidebar()" class="text-lg hover:text-red-400"><i class="fa-solid fa-xmark"></i></button>
+        <div class="flex space-x-1">
+          <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+          <button onclick="toggleSidebar()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition md:hidden" title="Close"><i class="fa-solid fa-times"></i></button>
+        </div>
       </div>
 
-      <div class="flex border-b border-gray-200 dark:border-gray-700 text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50">
-        <button onclick="switchSidebarTab('members')" id="tabBtn-members" class="flex-1 py-3 text-center border-b-2 border-waGreen text-waGreen font-bold">Members</button>
-        <button onclick="switchSidebarTab('topics')" id="tabBtn-topics" class="flex-1 py-3 text-center border-b-2 border-transparent hover:text-waGreen">Info</button>
-        <button onclick="switchSidebarTab('settings')" id="tabBtn-settings" class="flex-1 py-3 text-center border-b-2 border-transparent hover:text-waGreen">Settings</button>
+      <!-- Navigation Tabs -->
+      <div class="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-waDarkPanel shrink-0">
+        <button id="tabBtn-topics" onclick="switchSidebarTab('topics')" class="flex-1 py-3 text-xs uppercase tracking-wider font-bold border-b-2 border-waGreen text-waGreen transition">Rooms</button>
+        <button id="tabBtn-members" onclick="switchSidebarTab('members')" class="flex-1 py-3 text-xs uppercase tracking-wider font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition">Members</button>
+        <button id="tabBtn-settings" onclick="switchSidebarTab('settings')" class="flex-1 py-3 text-xs uppercase tracking-wider font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition">Settings</button>
       </div>
 
-      <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4">
+      <div class="flex-1 overflow-y-auto custom-scrollbar relative">
         
-        <!-- MEMBERS TAB -->
-        <div id="sideView-members" class="space-y-3">
-          <h3 class="text-xs font-bold uppercase text-gray-400">Team Roster</h3>
-          <div id="activeMembersList" class="space-y-2"></div>
-        </div>
-
-        <!-- TOPICS TAB -->
-        <div id="sideView-topics" class="hidden space-y-3">
-          <h3 class="text-xs font-bold uppercase text-gray-400">Knowledge | Innovation | Growth</h3>
-          <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 space-y-2">
-            <p class="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">Welcome to Matrix Team portal. Access your assigned combination chat rooms and collaborate seamlessly on scientific and academic challenges.</p>
+        <!-- View: Chat Rooms -->
+        <div id="sideView-topics" class="p-2">
+          <div class="px-2 py-3 flex justify-between items-center">
+            <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Available Rooms</h3>
+            <span id="roomCountBadge" class="bg-waGreen/20 text-waGreen text-[9px] px-2 py-0.5 rounded-full font-bold">0</span>
           </div>
+          <div id="roomsListContainer" class="space-y-1"></div>
         </div>
 
-        <!-- SETTINGS TAB -->
-        <div id="sideView-settings" class="hidden space-y-4 pb-8">
+        <!-- View: Active Members -->
+        <div id="sideView-members" class="hidden p-3 h-full flex flex-col">
+          <div class="mb-3 px-1">
+            <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-b border-gray-200 dark:border-gray-700 pb-2">Network Status</h3>
+          </div>
+          <div id="activeMembersList" class="space-y-2 flex-1 overflow-y-auto custom-scrollbar pr-1"></div>
+        </div>
+
+        <!-- View: User Settings -->
+        <div id="sideView-settings" class="hidden p-4 space-y-5">
+          <div>
+            <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Account Summary</h4>
+            <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-lg border border-gray-200 dark:border-gray-700 space-y-2 text-xs text-gray-700 dark:text-gray-300">
+              <p><strong>Name:</strong> <span id="setProfileName"></span></p>
+              <p><strong>Email:</strong> <span id="setProfileEmail"></span></p>
+              <button onclick="promptChangePassword()" class="mt-2 w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 py-1.5 rounded text-[11px] font-bold transition">Update Password</button>
+            </div>
+          </div>
           
-          <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-xl border border-gray-200 dark:border-gray-700">
-            <h4 class="text-[10px] font-bold uppercase text-gray-400 mb-2 tracking-wider">1. Profile</h4>
-            <div class="space-y-1">
-              <p class="text-xs text-gray-600 dark:text-gray-300">Name: <span id="setProfileName" class="font-semibold text-gray-900 dark:text-white"></span></p>
-              <p class="text-xs text-gray-600 dark:text-gray-300">Nickname: <span id="setProfileNick" class="font-semibold text-gray-900 dark:text-white"></span></p>
-              <p class="text-xs text-gray-600 dark:text-gray-300">Combination: <span id="setProfileCombo" class="font-semibold text-waGreen"></span></p>
-              <p class="text-xs text-gray-600 dark:text-gray-300">Email: <span id="setProfileEmail" class="font-semibold text-gray-900 dark:text-white"></span></p>
+          <div>
+            <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Preferences</h4>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-[11px] mb-1 font-medium text-gray-600 dark:text-gray-400">Application Font</label>
+                <select id="fontSelector" onchange="changeFont()" class="w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 text-xs rounded p-1.5">
+                  <option value="'Inter', sans-serif">Inter (Modern)</option>
+                  <option value="'Poppins', sans-serif">Poppins (Rounded)</option>
+                  <option value="'Roboto', sans-serif">Roboto (Classic)</option>
+                </select>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="enableNotifications()" class="flex-1 py-1.5 bg-waGreen/20 text-waGreen hover:bg-waGreen hover:text-white text-[10px] font-bold rounded transition">Turn On Alerts</button>
+                <button onclick="disableNotifications()" class="flex-1 py-1.5 bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white text-[10px] font-bold rounded transition">Mute</button>
+              </div>
             </div>
           </div>
 
-          <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-xl border border-gray-200 dark:border-gray-700">
-            <h4 class="text-[10px] font-bold uppercase text-gray-400 mb-2 tracking-wider">2. Security</h4>
-            <button onclick="promptChangePassword()" class="w-full py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 text-[11px] font-semibold rounded-lg transition">Change Password</button>
+          <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <button onclick="deleteAccount()" class="w-full py-2 bg-red-500 hover:bg-red-600 text-white text-[11px] font-bold rounded-lg transition shadow">Permanently Delete Account</button>
           </div>
-
-          <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-xl border border-gray-200 dark:border-gray-700 space-y-3">
-            <h4 class="text-[10px] font-bold uppercase text-gray-400 mb-1 tracking-wider">3. Theme & Appearance</h4>
-            
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-medium text-gray-700 dark:text-gray-300">Color Mode</span>
-              <button onclick="toggleTheme()" class="px-3 py-1 bg-waGreen/20 text-waDarkBubble dark:text-waLightGreen text-[10px] font-bold rounded shadow-sm hover:bg-waGreen/30 transition">Toggle Dark/Light</button>
-            </div>
-
-            <div>
-              <label class="block text-[10px] text-gray-500 mb-1">Interface Font</label>
-              <select id="fontSelector" onchange="changeFont()" class="w-full text-xs p-2 rounded bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 focus:ring-1 focus:ring-waGreen focus:outline-none">
-                <option value="'Inter', sans-serif">Inter (Default)</option>
-                <option value="'Poppins', sans-serif">Poppins</option>
-                <option value="'Roboto', sans-serif">Roboto</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-xl border border-gray-200 dark:border-gray-700">
-            <h4 class="text-[10px] font-bold uppercase text-gray-400 mb-2 tracking-wider">4. Notifications</h4>
-            <div class="flex gap-2">
-              <button onclick="enableNotifications()" class="flex-1 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 text-[11px] font-bold rounded-lg transition">Allow</button>
-              <button onclick="disableNotifications()" class="flex-1 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-[11px] font-bold rounded-lg transition">Stop</button>
-            </div>
-          </div>
-
-          <div class="bg-red-50 dark:bg-red-900/10 p-3 rounded-xl border border-red-200 dark:border-red-900/30">
-            <h4 class="text-[10px] font-bold uppercase text-red-500 mb-2 tracking-wider">5. Danger Zone</h4>
-            <button onclick="deleteAccount()" class="w-full py-2 bg-red-500 hover:bg-red-600 text-white text-[11px] font-bold rounded-lg transition shadow-md">Delete Account</button>
-          </div>
-
         </div>
 
       </div>
     </aside>
 
-    <!-- WhatsApp Web Two-Pane Layout container -->
-    <div class="flex flex-1 w-full h-full overflow-hidden">
+    <!-- Main Chat Workspace -->
+    <main id="rightPane" class="flex-1 flex flex-col bg-gray-200 dark:bg-waDarkBg h-full hidden md:flex min-w-0">
       
-      <!-- LEFT PANE: Conversations / Chat Rooms List -->
-      <div id="leftPane" class="w-full md:w-80 lg:w-96 bg-white dark:bg-waDarkPanel border-r border-gray-300 dark:border-gray-700 flex flex-col shrink-0 h-full">
-        <div class="p-3 bg-gray-50 dark:bg-waDarkHeader border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300"><i class="fa-solid fa-comments mr-1.5 text-waGreen"></i> Chat Rooms</h2>
-          <span id="roomCountBadge" class="text-[10px] bg-waGreen/20 text-waGreen font-bold px-2 py-0.5 rounded-full">0 Rooms</span>
+      <!-- Room Header -->
+      <header class="bg-gray-100 dark:bg-waDarkHeader border-b border-gray-300 dark:border-gray-800 px-4 py-3 flex justify-between items-center shrink-0 shadow-sm">
+        <div class="flex items-center space-x-3 overflow-hidden">
+          <button onclick="backToChatList()" class="md:hidden text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 p-1"><i class="fa-solid fa-arrow-left"></i></button>
+          <div class="w-10 h-10 rounded-full bg-waGreen text-white flex items-center justify-center text-lg shadow-sm shrink-0" id="activeRoomAvatar"></div>
+          <div class="min-w-0">
+            <h2 class="font-bold text-sm text-gray-900 dark:text-white truncate" id="activeRoomTitle">Select a Room</h2>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400 truncate" id="activeRoomDesc">Join a conversation</p>
+          </div>
         </div>
-        <div id="roomsListContainer" class="flex-1 overflow-y-auto custom-scrollbar divide-y divide-gray-100 dark:divide-gray-800/60">
-          <!-- Populated dynamically based on combination -->
+      </header>
+
+      <!-- Pinned Message Banner -->
+      <div id="pinnedBanner" class="hidden bg-waDarkBubble text-white px-4 py-2 flex items-center justify-between text-xs shadow-md shrink-0">
+        <div class="flex items-center space-x-2 overflow-hidden">
+          <i class="fa-solid fa-thumbtack text-[10px] opacity-75"></i>
+          <span class="font-bold">Pinned:</span>
+          <span class="truncate" id="pinnedBannerText"></span>
         </div>
+        <button onclick="unpinActiveMessage()" class="ml-2 opacity-75 hover:opacity-100 p-1"><i class="fa-solid fa-times"></i></button>
       </div>
 
-      <!-- RIGHT PANE: Active Chat Workspace -->
-      <div id="rightPane" class="hidden md:flex flex-1 flex-col bg-[#e5ddd5] dark:bg-waDarkBg overflow-hidden relative h-full">
+      <!-- Messages Feed -->
+      <div id="chatFeed" class="flex-1 overflow-y-auto p-4 custom-scrollbar scroll-smooth"></div>
+
+      <!-- Message Input Area -->
+      <footer class="bg-gray-100 dark:bg-waDarkHeader border-t border-gray-300 dark:border-gray-800 p-3 shrink-0">
         
-        <!-- Active Chat Header -->
-        <div class="bg-waTeal dark:bg-waDarkHeader text-white px-4 py-2.5 flex items-center justify-between shadow-md z-20 shrink-0">
-          <div class="flex items-center space-x-3 overflow-hidden">
-            <!-- Mobile Back Arrow -->
-            <button onclick="backToChatList()" class="md:hidden text-lg p-1 mr-1 text-white hover:text-gray-200 focus:outline-none" title="Back to Rooms">
-              <i class="fa-solid fa-arrow-left"></i>
-            </button>
-            <div id="activeRoomAvatar" class="w-9 h-9 rounded-full bg-waLightGreen flex items-center justify-center font-bold text-gray-900 shadow shrink-0">
-              <i class="fa-solid fa-bullhorn"></i>
-            </div>
-            <div class="truncate">
-              <h2 id="activeRoomTitle" class="font-bold text-sm truncate">Announcements & Chats</h2>
-              <p id="activeRoomDesc" class="text-[10px] text-green-200 truncate">Official announcements and general discussions</p>
-            </div>
-          </div>
-          <div class="flex items-center space-x-2">
-            <span class="text-[10px] bg-black/20 px-2 py-1 rounded font-medium hidden sm:inline">Matrix Secure Channel</span>
-          </div>
-        </div>
-
-        <!-- Pinned Message Banner -->
-        <div id="pinnedBanner" class="hidden bg-waTeal dark:bg-waDarkHeader text-white px-4 py-2 border-b border-gray-700 flex items-center justify-between text-xs shadow-md z-10 shrink-0">
-          <div class="flex items-center gap-2 overflow-hidden">
-            <i class="fa-solid fa-thumbtack text-waLightGreen shrink-0"></i>
-            <span class="font-bold text-waLightGreen shrink-0">Pinned:</span>
-            <span id="pinnedBannerText" class="truncate font-medium"></span>
-          </div>
-          <button onclick="unpinActiveMessage()" class="text-gray-300 hover:text-white shrink-0 ml-2 p-1" title="Unpin"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-
-        <!-- Chat Feed -->
-        <div id="chatFeed" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar"></div>
-
         <!-- Attachment Preview Bar -->
-        <div id="attachmentPreviewBar" class="hidden bg-white dark:bg-waDarkPanel border-t border-gray-200 dark:border-gray-700 p-2 flex items-center justify-between gap-3 shadow-lg">
-          <div class="flex items-center gap-3 overflow-hidden">
-            <img id="previewImgThumb" src="" class="w-10 h-10 object-cover rounded border border-gray-300 dark:border-gray-600 hidden">
-            <div class="flex flex-col truncate">
-              <span class="text-[11px] font-bold text-waGreen truncate" id="attachmentNameLabel">Screenshot Selected</span>
+        <div id="attachmentPreviewBar" class="hidden mb-2 p-2 bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-between border border-gray-300 dark:border-gray-700">
+          <div class="flex items-center space-x-3">
+            <img id="previewImgThumb" class="h-10 w-10 object-cover rounded shadow-sm border border-gray-400 hidden">
+            <div class="text-xs">
+              <span class="font-bold text-gray-700 dark:text-gray-300">File Selected:</span>
+              <span id="attachmentNameLabel" class="text-gray-500 dark:text-gray-400 truncate max-w-[150px] inline-block align-bottom"></span>
             </div>
           </div>
-          <button onclick="clearSelectedAttachment()" class="text-gray-400 hover:text-red-500 text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
+          <button onclick="clearSelectedAttachment()" class="text-gray-500 hover:text-red-500 p-1.5"><i class="fa-solid fa-times text-lg"></i></button>
         </div>
 
-        <!-- Chat Input Footer -->
-        <footer class="bg-white dark:bg-waDarkPanel p-2 border-t border-gray-200 dark:border-gray-700 flex items-center gap-2 z-20 shrink-0">
-          <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)" class="hidden">
-          <button type="button" onclick="triggerFileUpload()" class="w-9 h-9 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-300 flex items-center justify-center text-lg transition" title="Upload Screenshot / Image">
-            <i class="fa-solid fa-plus"></i>
+        <div class="flex items-end space-x-2 max-w-4xl mx-auto">
+          <button onclick="triggerFileUpload()" class="p-3 rounded-full text-gray-500 hover:text-waGreen hover:bg-gray-200 dark:hover:bg-gray-700 transition focus:outline-none" title="Attach Media">
+            <i class="fa-solid fa-paperclip text-lg"></i>
           </button>
-          <input type="text" id="messageInput" onkeypress="handleKeyPress(event)" placeholder="Type a message..." class="flex-1 px-4 py-2 text-sm rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-waGreen border border-transparent">
-          <button type="button" onclick="sendMessage()" class="w-9 h-9 rounded-full bg-waGreen text-white flex items-center justify-center hover:bg-waTeal shadow transition">
-            <i class="fa-solid fa-paper-plane text-sm"></i>
+          <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleFileSelect(event)">
+          
+          <div class="flex-1 relative">
+            <textarea id="messageInput" class="w-full bg-white dark:bg-waDarkPanel text-gray-900 dark:text-white rounded-2xl pl-4 pr-10 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-waGreen border border-transparent dark:border-gray-700 shadow-sm resize-none custom-scrollbar" rows="1" placeholder="Type a message or share a problem..." onkeypress="handleKeyPress(event)" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+          </div>
+          
+          <button onclick="sendMessage()" class="p-3 rounded-full bg-waGreen hover:bg-waLightGreen text-white shadow-md transition-all active:scale-95 focus:outline-none">
+            <i class="fa-solid fa-paper-plane text-lg translate-x-[-1px] translate-y-[1px]"></i>
           </button>
-        </footer>
-      </div>
+        </div>
+      </footer>
+    </main>
 
+  </div>
+
+  <!-- User Profile Modal (Click on Name) -->
+  <div id="profileModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-waDarkPanel rounded-xl shadow-2xl w-full max-w-xs overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div class="bg-waTeal p-5 text-center relative">
+        <button onclick="closeProfileModal()" class="absolute top-2 right-2 text-white/70 hover:text-white p-1"><i class="fa-solid fa-times text-lg"></i></button>
+        <div class="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center text-3xl font-bold text-waTeal shadow-lg mb-3" id="profileInit">U</div>
+        <h3 class="text-white font-bold text-lg" id="profileNick">Nickname</h3>
+      </div>
+      <div class="p-5 bg-gray-50 dark:bg-waDarkBg space-y-3">
+        <div><p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold">Real Name</p><p class="text-sm text-gray-800 dark:text-gray-100 font-medium" id="profileName">...</p></div>
+        <div><p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold">Subject Combination</p><p class="text-sm text-gray-800 dark:text-gray-100 font-medium" id="profileCombo">...</p></div>
+      </div>
+      <div class="p-3 border-t border-gray-200 dark:border-gray-700 text-center bg-white dark:bg-waDarkPanel">
+        <button onclick="closeProfileModal()" class="px-6 py-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-full transition">Close</button>
+      </div>
     </div>
   </div>
 
-  <!-- Image Modal Viewer -->
-  <div id="imageModal" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
-    <div class="relative max-w-4xl max-h-[90vh] overflow-hidden flex flex-col items-center">
-      <button onclick="closeModal()" class="absolute top-2 right-2 text-white bg-black/50 w-9 h-9 rounded-full flex items-center justify-center text-xl hover:bg-red-600 transition"><i class="fa-solid fa-xmark"></i></button>
-      <img id="modalImg" src="" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl">
-    </div>
+  <!-- Full Screen Image Modal -->
+  <div id="imageModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModal()">
+    <button class="absolute top-4 right-4 text-white hover:text-red-400 text-3xl p-2 focus:outline-none"><i class="fa-solid fa-times"></i></button>
+    <img id="modalImg" class="max-w-full max-h-full object-contain rounded shadow-2xl cursor-zoom-out">
   </div>
 
   <script>
+    /* ---------------- FIREBASE CONFIGURATION ---------------- */
     const firebaseConfig = {
-      apiKey: "AIzaSyCs49R96UapT4MqzWyGaDq_owkuUds7RrE",
-      authDomain: "matrix-team-6704d.firebaseapp.com",
-      databaseURL: "https://matrix-team-6704d-default-rtdb.firebaseio.com",
-      projectId: "matrix-team-6704d",
-      storageBucket: "matrix-team-6704d.appspot.com",
-      messagingSenderId: "848942512190",
-      appId: "1:848942512190:web:81b6c794c0cc46e25d396f"
+      apiKey: "AIzaSyD-YOUR-API-KEY-HERE",
+      authDomain: "matrixteam-app.firebaseapp.com",
+      projectId: "matrixteam-app",
+      storageBucket: "matrixteam-app.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:abcdef123456",
+      databaseURL: "https://matrixteam-app-default-rtdb.firebaseio.com"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // All available chat rooms
+    /* ---------------- STATE MANAGEMENT ---------------- */
     const ALL_CHAT_ROOMS = [
-      { id: 'announcements', name: 'Announcements & Chats', subject: 'General', icon: 'fa-bullhorn', desc: 'Official announcements and general member discussions (All members can chat)' },
-      { id: 'physics', name: 'Physics Chat Room', subject: 'Physics', icon: 'fa-atom', desc: 'Mechanics, Rotational Motion & Electromagnetism' },
-      { id: 'chemistry', name: 'Chemistry Chat Room', subject: 'Chemistry', icon: 'fa-flask', desc: 'Organic Synthesis, Kinetics & Equilibria' },
-      { id: 'mathematics', name: 'Mathematics Chat Room', subject: 'Mathematics', icon: 'fa-square-root-variable', desc: 'Calculus, Differential Equations & Vectors' },
-      { id: 'biology', name: 'Biology Chat Room', subject: 'Biology', icon: 'fa-dna', desc: 'Genetics, Physiology & Ecology' },
-      { id: 'computer', name: 'Computer Chat Room', subject: 'Computer', icon: 'fa-laptop-code', desc: 'Software development, Python & Web systems' },
-      { id: 'economics', name: 'Economics Chat Room', subject: 'Economics', icon: 'fa-chart-line', desc: 'Microeconomics, Macroeconomics & Trade' },
-      { id: 'geography', name: 'Geography Chat Room', subject: 'Geography', icon: 'fa-earth-americas', desc: 'Physical and Human Geography studies' }
+      { id: 'announcements', name: 'Board Announcements', icon: 'fa-bullhorn', desc: 'Official matrix updates', subject: 'General' },
+      { id: 'physics', name: 'Physics Mechanics', icon: 'fa-atom', desc: 'Kinematics, forces, energy', subject: 'Physics' },
+      { id: 'chemistry', name: 'Organic Chemistry', icon: 'fa-flask', desc: 'Reactions, nomenclature', subject: 'Chemistry' },
+      { id: 'mathematics', name: 'Advanced Math', icon: 'fa-calculator', desc: 'Calculus, algebra, stats', subject: 'Mathematics' },
+      { id: 'biology', name: 'Biology Genetics', icon: 'fa-dna', desc: 'Cells, genetics, anatomy', subject: 'Biology' },
+      { id: 'computer', name: 'Computer Science', icon: 'fa-laptop-code', desc: 'Programming, logic, IT', subject: 'Computer' },
+      { id: 'economics', name: 'Economics', icon: 'fa-chart-line', desc: 'Micro & Macro economics', subject: 'Economics' },
+      { id: 'geography', name: 'Physical Geography', icon: 'fa-earth-africa', desc: 'Earth systems, mapping', subject: 'Geography' }
     ];
 
     let state = {
       currentUser: null,
-      selectedFileObject: null,
-      members: {}, 
-      messages: {}, 
       currentRoomId: 'announcements',
-      userRooms: []
+      userRooms: [],
+      members: {},
+      messages: {},
+      selectedFileObject: null
     };
 
     let notificationsEnabled = localStorage.getItem('matrix_notify') === 'true';
-    let lastProcessedTimestamp = 0;
-    let isInitialSyncDone = false;
     let currentRoomListener = null;
+    let isInitialSyncDone = false;
+    let lastProcessedTimestamp = 0;
 
-    function showLoader(text = "Processing...") {
-      document.getElementById('loaderText').innerText = text;
-      document.getElementById('globalLoader').classList.remove('hidden');
-    }
+    /* ---------------- UI CONTROLS ---------------- */
+    function showLoader(msg) { document.getElementById('loaderText').innerText = msg; document.getElementById('globalLoader').classList.remove('hidden'); }
+    function hideLoader() { document.getElementById('globalLoader').classList.add('hidden'); }
 
-    function hideLoader() {
-      document.getElementById('globalLoader').classList.add('hidden');
-    }
-
-    /* ---------------- AUTHENTICATION UI & LOGIC ---------------- */
-    function toggleAuthView(view) {
+    function switchAuthView(view) {
       document.getElementById('authError').classList.add('hidden');
       if (view === 'register') {
         document.getElementById('loginView').classList.add('hidden');
         document.getElementById('registerView').classList.remove('hidden');
-        document.getElementById('authSubtitle').innerText = "Register for a new account";
+        document.getElementById('authSubtitle').innerText = "Request new member access";
       } else {
         document.getElementById('registerView').classList.add('hidden');
         document.getElementById('loginView').classList.remove('hidden');
