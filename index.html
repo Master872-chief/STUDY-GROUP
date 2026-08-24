@@ -48,47 +48,100 @@
     <p id="loaderText" class="text-white font-bold text-sm tracking-wide">Processing...</p>
   </div>
 
-  <!-- REGISTRATION / ONBOARDING MODAL -->
-  <div id="joinModal" class="fixed inset-0 z-40 bg-waDarkBg/95 backdrop-blur-md flex items-center justify-center p-4">
+  <!-- AUTHENTICATION (LOGIN & REGISTER) MODAL -->
+  <div id="authModal" class="fixed inset-0 z-40 bg-waDarkBg/95 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white dark:bg-waDarkPanel border border-gray-200 dark:border-gray-700 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-5">
       <div class="text-center space-y-1">
         <div class="w-14 h-14 bg-waLightGreen text-gray-900 rounded-full flex items-center justify-center font-bold text-2xl mx-auto shadow-lg">M</div>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Register for MATRIX TEAM</h2>
-        <p class="text-xs text-gray-500 dark:text-gray-400">Enter your credentials to register your account</p>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">MATRIX TEAM</h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400" id="authSubtitle">Access your account portal</p>
       </div>
 
-      <div id="joinError" class="hidden text-red-500 text-xs font-semibold text-center bg-red-50 dark:bg-red-950/50 p-2.5 rounded-xl border border-red-200 dark:border-red-800"></div>
+      <div id="authError" class="hidden text-red-500 text-xs font-semibold text-center bg-red-50 dark:bg-red-950/50 p-2.5 rounded-xl border border-red-200 dark:border-red-800"></div>
 
-      <form onsubmit="handleJoinTeam(event)" class="space-y-3.5">
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Full Name</label>
-          <input type="text" id="joinFullName" placeholder="e.g. Victor John Mana" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Subject Combination</label>
-          <input type="text" id="joinCombination" placeholder="e.g. PCM, PCB, PGM" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Preferred Nickname (Group Tag)</label>
-          <input type="text" id="joinNickname" placeholder="e.g. Axion~7, ChemPro" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Email Address</label>
-          <input type="email" id="joinEmail" placeholder="e.g. user@example.com" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Password</label>
-          <div class="relative">
-            <input type="password" id="joinPassword" placeholder="At least 6 characters" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100 pr-10">
-            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
-              <i class="fa-solid fa-eye" id="passwordEyeIcon"></i>
-            </button>
+      <!-- LOGIN VIEW -->
+      <div id="loginView" class="space-y-4">
+        <form onsubmit="handleLogin(event)" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Group Nickname</label>
+            <input type="text" id="loginNickname" placeholder="e.g. Axion~7" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
           </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Password</label>
+            <div class="relative">
+              <input type="password" id="loginPassword" placeholder="Enter your password" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100 pr-10">
+              <button type="button" onclick="togglePasswordVisibility('loginPassword', 'loginPasswordEye')" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
+                <i class="fa-solid fa-eye" id="loginPasswordEye"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="w-full py-3 bg-waGreen hover:bg-waTeal text-white font-bold text-sm rounded-xl shadow-lg transition duration-200">
+            Log In
+          </button>
+        </form>
+        <div class="text-center pt-2">
+          <p class="text-xs text-gray-500 dark:text-gray-400">Not a member yet?</p>
+          <button onclick="toggleAuthView('register')" class="mt-1 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow transition duration-200">
+            Register Here
+          </button>
         </div>
-        <button type="submit" id="joinSubmitBtn" class="w-full py-3 bg-waGreen hover:bg-waTeal text-white font-bold text-sm rounded-xl shadow-lg transition duration-200">
-          Register & Enter Portal
-        </button>
-      </form>
+      </div>
+
+      <!-- REGISTER VIEW -->
+      <div id="registerView" class="hidden space-y-3.5">
+        <form onsubmit="handleRegister(event)" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Full Name</label>
+            <input type="text" id="joinFullName" placeholder="e.g. Victor John Mana" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Subject Combination</label>
+            <input type="text" id="joinCombination" placeholder="e.g. PCM, PCB, PGM" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Preferred Nickname (Group Tag)</label>
+            <input type="text" id="joinNickname" placeholder="e.g. Axion~7, ChemPro" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Email Address</label>
+            <input type="email" id="joinEmail" placeholder="e.g. user@example.com" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Password</label>
+            <div class="relative">
+              <input type="password" id="joinPassword" placeholder="At least 6 characters" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100 pr-10">
+              <button type="button" onclick="togglePasswordVisibility('joinPassword', 'joinPasswordEye')" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
+                <i class="fa-solid fa-eye" id="joinPasswordEye"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="w-full py-3 bg-waGreen hover:bg-waTeal text-white font-bold text-sm rounded-xl shadow-lg transition duration-200">
+            Register & Enter Portal
+          </button>
+        </form>
+        <div class="text-center pt-1">
+          <p class="text-xs text-gray-500 dark:text-gray-400">Already a member?</p>
+          <button onclick="toggleAuthView('login')" class="mt-1 text-waGreen hover:text-waTeal font-bold text-sm transition duration-200">
+            Click here to Log In
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USER PROFILE MODAL -->
+  <div id="profileModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-waDarkPanel w-full max-w-xs rounded-2xl p-6 shadow-2xl relative text-center border border-gray-200 dark:border-gray-700">
+      <button onclick="closeProfileModal()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition text-lg"><i class="fa-solid fa-xmark"></i></button>
+      <div class="w-16 h-16 mx-auto bg-waGreen text-white rounded-full flex items-center justify-center text-3xl font-bold mb-3 shadow-md" id="profileInit"></div>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="profileNick"></h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-2" id="profileName"></p>
+      <div class="mb-5">
+        <span class="text-xs font-bold text-waGreen bg-waGreen/10 px-3 py-1 rounded-full uppercase tracking-wider border border-waGreen/20" id="profileCombo"></span>
+      </div>
+      <button onclick="alert('Follow functionality coming soon!')" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-lg transition duration-200">
+        <i class="fa-solid fa-user-plus mr-1"></i> Follow
+      </button>
     </div>
   </div>
 
@@ -149,7 +202,6 @@
         <!-- SETTINGS TAB -->
         <div id="sideView-settings" class="hidden space-y-4 pb-8">
           
-          <!-- 1: Profile -->
           <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-xl border border-gray-200 dark:border-gray-700">
             <h4 class="text-[10px] font-bold uppercase text-gray-400 mb-2 tracking-wider">1. Profile</h4>
             <div class="space-y-1">
@@ -160,13 +212,11 @@
             </div>
           </div>
 
-          <!-- 2: Security -->
           <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-xl border border-gray-200 dark:border-gray-700">
             <h4 class="text-[10px] font-bold uppercase text-gray-400 mb-2 tracking-wider">2. Security</h4>
             <button onclick="promptChangePassword()" class="w-full py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 text-[11px] font-semibold rounded-lg transition">Change Password</button>
           </div>
 
-          <!-- 3: Theme and Appearance -->
           <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-xl border border-gray-200 dark:border-gray-700 space-y-3">
             <h4 class="text-[10px] font-bold uppercase text-gray-400 mb-1 tracking-wider">3. Theme & Appearance</h4>
             
@@ -185,17 +235,15 @@
             </div>
           </div>
 
-          <!-- 4: Notifications -->
           <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-xl border border-gray-200 dark:border-gray-700">
             <h4 class="text-[10px] font-bold uppercase text-gray-400 mb-2 tracking-wider">4. Notifications</h4>
             <p class="text-[10px] text-gray-500 mb-2 leading-tight">Receive desktop alerts when someone sends a message.</p>
             <div class="flex gap-2">
-              <button onclick="enableNotifications()" class="flex-1 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 text-[11px] font-bold rounded-lg transition border border-green-200 dark:border-green-800">Allow Notifications</button>
-              <button onclick="disableNotifications()" class="flex-1 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 text-[11px] font-bold rounded-lg transition border border-gray-300 dark:border-gray-600">Stop Notifications</button>
+              <button onclick="enableNotifications()" class="flex-1 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 text-[11px] font-bold rounded-lg transition border border-green-200 dark:border-green-800">Allow</button>
+              <button onclick="disableNotifications()" class="flex-1 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 text-[11px] font-bold rounded-lg transition border border-gray-300 dark:border-gray-600">Stop</button>
             </div>
           </div>
 
-          <!-- 5: Delete Account -->
           <div class="bg-red-50 dark:bg-red-900/10 p-3 rounded-xl border border-red-200 dark:border-red-900/30">
             <h4 class="text-[10px] font-bold uppercase text-red-500 mb-2 tracking-wider">5. Danger Zone</h4>
             <button onclick="deleteAccount()" class="w-full py-2 bg-red-500 hover:bg-red-600 text-white text-[11px] font-bold rounded-lg transition shadow-md">Delete Account</button>
@@ -285,7 +333,7 @@
     };
 
     let notificationsEnabled = localStorage.getItem('matrix_notify') === 'true';
-    let initialMessageCount = 0;
+    let lastProcessedTimestamp = 0;
     let isInitialSyncDone = false;
 
     function showLoader(text = "Processing...") {
@@ -297,9 +345,23 @@
       document.getElementById('globalLoader').classList.add('hidden');
     }
 
-    function togglePasswordVisibility() {
-      const passInput = document.getElementById('joinPassword');
-      const eyeIcon = document.getElementById('passwordEyeIcon');
+    /* ---------------- AUTHENTICATION UI & LOGIC ---------------- */
+    function toggleAuthView(view) {
+      document.getElementById('authError').classList.add('hidden');
+      if (view === 'register') {
+        document.getElementById('loginView').classList.add('hidden');
+        document.getElementById('registerView').classList.remove('hidden');
+        document.getElementById('authSubtitle').innerText = "Register for a new account";
+      } else {
+        document.getElementById('registerView').classList.add('hidden');
+        document.getElementById('loginView').classList.remove('hidden');
+        document.getElementById('authSubtitle').innerText = "Access your account portal";
+      }
+    }
+
+    function togglePasswordVisibility(inputId, iconId) {
+      const passInput = document.getElementById(inputId);
+      const eyeIcon = document.getElementById(iconId);
       if (passInput.type === 'password') {
         passInput.type = 'text';
         eyeIcon.classList.remove('fa-eye');
@@ -311,111 +373,56 @@
       }
     }
 
-    function initDatabaseListeners() {
-      db.ref('messages').on('value', (snapshot) => {
-        state.messages = snapshot.val() || {};
-        renderChatFeed();
-        checkPinnedBanner();
-
-        const msgKeys = Object.keys(state.messages);
-        if (!isInitialSyncDone) {
-          initialMessageCount = msgKeys.length;
-          isInitialSyncDone = true;
-        } else if (msgKeys.length > initialMessageCount) {
-          const newestKey = msgKeys[msgKeys.length - 1];
-          const newestMsg = state.messages[newestKey];
-          
-          if (notificationsEnabled && newestMsg && newestMsg.sender !== state.currentUser.nickname) {
-            if (Notification.permission === "granted") {
-              new Notification(`Matrix Team: ${newestMsg.sender}`, { body: newestMsg.text || "Sent a screenshot" });
-            }
-          }
-          initialMessageCount = msgKeys.length;
-        }
-      });
-
-      db.ref('members').on('value', (snapshot) => {
-        state.members = snapshot.val() || {};
-        renderActiveMembers();
-      });
-
-      if (state.currentUser) {
-        const myNicknameKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
-        
-        // Listen to connection status
-        const myStatusRef = db.ref(`members/${myNicknameKey}/status`);
-        db.ref('.info/connected').on('value', (snapshot) => {
-          if (snapshot.val() === false) return;
-          myStatusRef.onDisconnect().set('offline');
-          myStatusRef.set('online');
-        });
-
-        // Listen for termination/removal by admin
-        db.ref(`members/${myNicknameKey}`).on('value', (snapshot) => {
-          if (isInitialSyncDone && !snapshot.exists() && state.currentUser) {
-            alert("You have been terminated from the group please contact the admin mastermatrix872@gmail.com to join");
-            localStorage.removeItem('matrixUser');
-            auth.signOut();
-            location.reload();
-          }
-        });
-      }
-    }
-
-    function checkLocalLogin() {
-      auth.onAuthStateChanged((firebaseUser) => {
-        if (firebaseUser) {
-          const savedUser = localStorage.getItem('matrixUser');
-          if (savedUser) {
-            state.currentUser = JSON.parse(savedUser);
-            
-            // Double check if banned
-            const nickKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
-            const emailKey = state.currentUser.email.replace(/[.#$[\]]/g, "_");
-
-            Promise.all([
-              db.ref(`bannedNicknames/${nickKey}`).once('value'),
-              db.ref(`bannedEmails/${emailKey}`).once('value')
-            ]).then(([nickSnap, emailSnap]) => {
-              if (nickSnap.exists() || emailSnap.exists()) {
-                alert("You have been terminated from the group please contact the admin mastermatrix872@gmail.com to join");
-                localStorage.removeItem('matrixUser');
-                auth.signOut();
-                location.reload();
-                return;
-              }
-
-              document.getElementById('joinModal').classList.add('hidden');
-              
-              const savedFont = localStorage.getItem('matrix_font');
-              if (savedFont) {
-                document.body.style.fontFamily = savedFont;
-                document.getElementById('fontSelector').value = savedFont;
-              }
-
-              initApp();
-            });
-          }
-        }
-      });
-    }
-
-    function logout() {
-      if (state.currentUser) {
-        const myNicknameKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
-        db.ref(`members/${myNicknameKey}/status`).set('offline');
-      }
-      auth.signOut().then(() => {
-        localStorage.removeItem('matrixUser');
-        location.reload();
-      });
-    }
-
-    async function handleJoinTeam(e) {
+    async function handleLogin(e) {
       e.preventDefault();
-      const errBox = document.getElementById('joinError');
+      const errBox = document.getElementById('authError');
       errBox.classList.add('hidden');
-      errBox.innerText = '';
+      
+      const nickname = document.getElementById('loginNickname').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      if (!nickname || !password) return;
+
+      showLoader("Logging in...");
+
+      try {
+        const nickKey = nickname.replace(/[.#$[\]]/g, "_");
+        
+        const userSnap = await db.ref(`members/${nickKey}`).once('value');
+        if (!userSnap.exists()) {
+          throw new Error("Nickname not found. Please register or check your spelling.");
+        }
+        
+        const userData = userSnap.val();
+        const email = userData.email;
+
+        const emailKey = email.replace(/[.#$[\]]/g, "_");
+        const bannedNickSnap = await db.ref(`bannedNicknames/${nickKey}`).once('value');
+        const bannedEmailSnap = await db.ref(`bannedEmails/${emailKey}`).once('value');
+
+        if (bannedNickSnap.exists() || bannedEmailSnap.exists()) {
+          throw new Error("You have been terminated from the group please contact the admin mastermatrix872@gmail.com to join");
+        }
+
+        await auth.signInWithEmailAndPassword(email, password);
+
+        state.currentUser = userData;
+        localStorage.setItem('matrixUser', JSON.stringify(userData));
+
+        hideLoader();
+        document.getElementById('authModal').classList.add('hidden');
+        initApp();
+      } catch (error) {
+        hideLoader();
+        errBox.innerText = error.message;
+        errBox.classList.remove('hidden');
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const errBox = document.getElementById('authError');
+      errBox.classList.add('hidden');
 
       const fullName = document.getElementById('joinFullName').value.trim();
       const combo = document.getElementById('joinCombination').value.trim().toUpperCase();
@@ -431,7 +438,6 @@
         const nickKey = nickname.replace(/[.#$[\]]/g, "_");
         const emailKey = email.replace(/[.#$[\]]/g, "_");
 
-        // Check banlists first
         const bannedNickSnap = await db.ref(`bannedNicknames/${nickKey}`).once('value');
         const bannedEmailSnap = await db.ref(`bannedEmails/${emailKey}`).once('value');
 
@@ -442,7 +448,6 @@
           return;
         }
 
-        // Check if nickname already exists in active roster
         const existingMemberSnap = await db.ref(`members/${nickKey}`).once('value');
         if (existingMemberSnap.exists()) {
           hideLoader();
@@ -481,7 +486,7 @@
         localStorage.setItem('matrixUser', JSON.stringify(newUser));
 
         hideLoader();
-        document.getElementById('joinModal').classList.add('hidden');
+        document.getElementById('authModal').classList.add('hidden');
         initApp();
       } catch (error) {
         hideLoader();
@@ -490,7 +495,122 @@
       }
     }
 
+    function checkLocalLogin() {
+      auth.onAuthStateChanged(async (firebaseUser) => {
+        if (firebaseUser) {
+          let savedUser = localStorage.getItem('matrixUser');
+          if (savedUser) {
+            state.currentUser = JSON.parse(savedUser);
+          } else {
+            // Recover user data from database if localStorage was cleared
+            const membersSnap = await db.ref('members').once('value');
+            if (membersSnap.exists()) {
+              const members = membersSnap.val();
+              for (const key in members) {
+                if (members[key].email === firebaseUser.email) {
+                  state.currentUser = members[key];
+                  localStorage.setItem('matrixUser', JSON.stringify(members[key]));
+                  break;
+                }
+              }
+            }
+          }
+
+          if (state.currentUser) {
+            const nickKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
+            const emailKey = state.currentUser.email.replace(/[.#$[\]]/g, "_");
+
+            const [nickSnap, emailSnap] = await Promise.all([
+              db.ref(`bannedNicknames/${nickKey}`).once('value'),
+              db.ref(`bannedEmails/${emailKey}`).once('value')
+            ]);
+
+            if (nickSnap.exists() || emailSnap.exists()) {
+              alert("You have been terminated from the group please contact the admin mastermatrix872@gmail.com to join");
+              localStorage.removeItem('matrixUser');
+              auth.signOut();
+              location.reload();
+              return;
+            }
+
+            document.getElementById('authModal').classList.add('hidden');
+            
+            const savedFont = localStorage.getItem('matrix_font');
+            if (savedFont) {
+              document.body.style.fontFamily = savedFont;
+              document.getElementById('fontSelector').value = savedFont;
+            }
+
+            initApp();
+          }
+        }
+      });
+    }
+
+    function logout() {
+      if (state.currentUser) {
+        const myNicknameKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
+        db.ref(`members/${myNicknameKey}/status`).set('offline');
+      }
+      auth.signOut().then(() => {
+        localStorage.removeItem('matrixUser');
+        location.reload();
+      });
+    }
+
+    function initDatabaseListeners() {
+      db.ref('messages').on('value', (snapshot) => {
+        state.messages = snapshot.val() || {};
+        renderChatFeed();
+        checkPinnedBanner();
+
+        const msgEntries = Object.entries(state.messages);
+        if (msgEntries.length > 0) {
+          const latestMsg = msgEntries[msgEntries.length - 1][1];
+          const latestTimestamp = latestMsg.timestamp || 0;
+
+          if (!isInitialSyncDone) {
+            lastProcessedTimestamp = latestTimestamp;
+            isInitialSyncDone = true;
+          } else if (latestTimestamp > lastProcessedTimestamp) {
+            if (notificationsEnabled && latestMsg && latestMsg.sender !== state.currentUser?.nickname) {
+              if (Notification.permission === "granted") {
+                new Notification(`Matrix Team: ${latestMsg.sender}`, { body: latestMsg.text || "Sent a screenshot" });
+              }
+            }
+            lastProcessedTimestamp = latestTimestamp;
+          }
+        }
+      });
+
+      db.ref('members').on('value', (snapshot) => {
+        state.members = snapshot.val() || {};
+        renderActiveMembers();
+      });
+
+      if (state.currentUser) {
+        const myNicknameKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
+        
+        const myStatusRef = db.ref(`members/${myNicknameKey}/status`);
+        db.ref('.info/connected').on('value', (snapshot) => {
+          if (snapshot.val() === false) return;
+          myStatusRef.onDisconnect().set('offline');
+          myStatusRef.set('online');
+        });
+
+        db.ref(`members/${myNicknameKey}`).on('value', (snapshot) => {
+          if (isInitialSyncDone && !snapshot.exists() && state.currentUser) {
+            alert("You have been terminated from the group please contact the admin mastermatrix872@gmail.com to join");
+            localStorage.removeItem('matrixUser');
+            auth.signOut();
+            location.reload();
+          }
+        });
+      }
+    }
+
     function initApp() {
+      if (!state.currentUser) return;
       document.getElementById('currentUserBadge').innerText = `${state.currentUser.nickname} [${state.currentUser.combo}] ${state.currentUser.isAdmin ? '(ADMIN)' : ''}`;
       populateProfileSettings();
       renderTopics();
@@ -498,7 +618,6 @@
     }
 
     /* ---------------- SETTINGS FUNCTIONS ---------------- */
-    
     function populateProfileSettings() {
       if(state.currentUser) {
         document.getElementById('setProfileName').innerText = state.currentUser.fullName;
@@ -590,11 +709,8 @@
       try {
         const safeEmailKey = memberEmail.replace(/[.#$[\]]/g, "_");
         
-        // Add to permanent ban lists
         await db.ref(`bannedNicknames/${nickKey}`).set(true);
         await db.ref(`bannedEmails/${safeEmailKey}`).set(true);
-
-        // Remove from active members roster (triggers automatic kick-out on their device)
         await db.ref(`members/${nickKey}`).remove();
 
         hideLoader();
@@ -638,7 +754,7 @@
             <div class="flex items-center space-x-2 overflow-hidden">
               <div class="w-7 h-7 shrink-0 rounded-full bg-waGreen text-white flex items-center justify-center font-bold text-xs">${m.initial || 'U'}</div>
               <div class="truncate">
-                <p class="font-semibold text-gray-800 dark:text-gray-100 text-[11px] truncate">
+                <p class="font-semibold text-gray-800 dark:text-gray-100 text-[11px] truncate cursor-pointer hover:underline" onclick="showUserProfile('${nickKey}')">
                   ${m.nickname} <span class="text-[9px] text-waGreen font-bold">(${m.combo})</span>
                   ${m.isAdmin ? '<span class="ml-1 px-1 py-0.2 bg-red-600 text-white text-[8px] font-bold rounded">ADMIN</span>' : ''}
                 </p>
@@ -696,6 +812,32 @@
 
     function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
+    // Compress image helper to prevent Firebase 1MB Realtime DB limit errors
+    function compressImage(file, maxWidth = 800, quality = 0.7) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = function () {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+        };
+      });
+    }
+
     async function sendMessage() {
       const input = document.getElementById('messageInput');
       const text = input.value.trim();
@@ -709,20 +851,20 @@
         const file = state.selectedFileObject;
         const subject = document.getElementById('problemSubject').value;
         
-        showLoader("Uploading screenshot...");
+        showLoader("Compressing & uploading screenshot...");
 
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-          const base64Data = e.target.result;
+        try {
+          const compressedBase64 = await compressImage(file);
           const newMsgRef = db.ref('messages').push();
           const problemMessage = {
             type: "problem",
             sender: state.currentUser.nickname,
+            senderKey: state.currentUser.nickname.replace(/[.#$[\]]/g, "_"),
             senderInitial: state.currentUser.initial,
             isAdmin: state.currentUser.isAdmin || false,
             text: text || `Screenshot: ${file.name}`,
             subject: subject,
-            imageUrl: base64Data,
+            imageUrl: compressedBase64,
             status: "unsolved",
             isUploading: false,
             time: timeStr,
@@ -735,12 +877,15 @@
           hideLoader();
           clearSelectedAttachment();
           input.value = '';
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+          hideLoader();
+          alert("Error processing image: " + err.message);
+        }
       } else {
         const newMessage = {
           type: "text",
           sender: state.currentUser.nickname,
+          senderKey: state.currentUser.nickname.replace(/[.#$[\]]/g, "_"),
           senderInitial: state.currentUser.initial,
           isAdmin: state.currentUser.isAdmin || false,
           text: text,
@@ -811,6 +956,26 @@
       }
     }
 
+    /* ---------------- USER PROFILE MODAL ---------------- */
+    function showUserProfile(nickKey) {
+      if (!nickKey) return;
+      const user = state.members[nickKey];
+      
+      if (user) {
+        document.getElementById('profileInit').innerText = user.initial || 'U';
+        document.getElementById('profileNick').innerText = user.nickname;
+        document.getElementById('profileName').innerText = user.fullName;
+        document.getElementById('profileCombo').innerText = user.combo;
+        document.getElementById('profileModal').classList.remove('hidden');
+      } else {
+        alert("User details not found. They might be offline or no longer in the group.");
+      }
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').classList.add('hidden');
+    }
+
     function renderChatFeed() {
       const feed = document.getElementById('chatFeed');
       const msgEntries = Object.entries(state.messages);
@@ -829,13 +994,14 @@
             const isMe = state.currentUser && m.sender === state.currentUser.nickname;
             const canDelete = isMe || (state.currentUser && state.currentUser.isAdmin);
             const isPinned = m.pinned && (now - (m.pinnedAt || 0) < 86400000);
+            const senderKey = m.senderKey || (m.sender ? m.sender.replace(/[.#$[\]]/g, "_") : '');
 
             if (m.type === 'text') {
               return `
                 <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
                   <div class="max-w-[75%] sm:max-w-xs px-3 py-1.5 rounded-xl text-[12px] ${isMe ? 'bg-waDarkBubble text-white rounded-br-sm' : 'bg-white dark:bg-waDarkIncoming text-gray-800 dark:text-gray-100 rounded-bl-sm shadow-sm'}">
                     <div class="flex items-center justify-between gap-2 mb-0.5">
-                      ${!isMe ? `<p class="text-[10px] font-bold text-waGreen flex items-center gap-1">${m.sender} ${m.isAdmin ? '<span class="bg-red-600 text-white text-[7px] px-1 rounded">ADMIN</span>' : ''}</p>` : (m.isAdmin ? '<p class="text-[10px] font-bold text-red-300">ADMIN</p>': '')}
+                      ${!isMe ? `<p class="text-[10px] font-bold text-waGreen flex items-center gap-1 cursor-pointer hover:underline" onclick="showUserProfile('${senderKey}')">${m.sender} ${m.isAdmin ? '<span class="bg-red-600 text-white text-[7px] px-1 rounded">ADMIN</span>' : ''}</p>` : (m.isAdmin ? `<p class="text-[10px] font-bold text-red-300 cursor-pointer hover:underline" onclick="showUserProfile('${senderKey}')">ADMIN</p>`: '')}
                       <div class="flex items-center gap-1.5">
                         <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-300 hover:text-waLightGreen'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
                         ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-300 hover:text-red-400 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
@@ -847,6 +1013,9 @@
                 </div>
               `;
             } else if (m.type === 'problem') {
+              const solvingKey = m.solvingUser && m.solvingUser.name ? m.solvingUser.name.replace(/[.#$[\]]/g, "_") : '';
+              const solvedKey = m.solvedUser && m.solvedUser.name ? m.solvedUser.name.replace(/[.#$[\]]/g, "_") : '';
+
               return `
                 <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} my-1">
                   <div class="max-w-[85%] sm:max-w-sm bg-white dark:bg-waDarkIncoming rounded-xl p-2.5 shadow-sm border border-gray-200 dark:border-gray-700/50 space-y-2 ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}">
@@ -873,13 +1042,13 @@
                         ${m.status==='solving' || m.status==='solved' ? `<span class="text-gray-500">•</span>` : ''}
                         
                         ${m.status==='solving' ? `
-                        <span class="text-blue-500 font-bold flex items-center gap-1">
+                        <span onclick="showUserProfile('${solvingKey}')" class="text-blue-500 font-bold flex items-center gap-1 cursor-pointer hover:underline">
                           <span class="w-3.5 h-3.5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[7px]" title="${m.solvingUser ? m.solvingUser.name : ''}">${m.solvingUser ? m.solvingUser.initial : ''}</span>
                           Solving
                         </span>` : ''}
                         
                         ${m.status==='solved' ? `
-                        <span class="text-green-500 font-bold flex items-center gap-1">
+                        <span onclick="showUserProfile('${solvedKey}')" class="text-green-500 font-bold flex items-center gap-1 cursor-pointer hover:underline">
                           <span class="w-3.5 h-3.5 rounded-full bg-green-500 text-white flex items-center justify-center text-[7px]" title="${m.solvedUser ? m.solvedUser.name : ''}">${m.solvedUser ? m.solvedUser.initial : ''}</span>
                           Solved
                         </span>` : ''}
