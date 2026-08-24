@@ -341,13 +341,13 @@
   <script>
     /* ---------------- FIREBASE CONFIGURATION ---------------- */
     const firebaseConfig = {
-      apiKey: "AIzaSyD-YOUR-API-KEY-HERE",
-      authDomain: "matrixteam-app.firebaseapp.com",
-      projectId: "matrixteam-app",
-      storageBucket: "matrixteam-app.appspot.com",
-      messagingSenderId: "1234567890",
-      appId: "1:1234567890:web:abcdef123456",
-      databaseURL: "https://matrixteam-app-default-rtdb.firebaseio.com"
+      apiKey: "AIzaSyCs49R96UapT4MqzWyGaDq_owkuUds7RrE",
+      authDomain: "matrix-team-6704d.firebaseapp.com",
+      databaseURL: "https://matrix-team-6704d-default-rtdb.firebaseio.com",
+      projectId: "matrix-team-6704d",
+      storageBucket: "matrix-team-6704d.firebasestorage.app",
+      messagingSenderId: "848942512190",
+      appId: "1:848942512190:web:81b6c794c0cc46e25d396f"
     };
 
     if (!firebase.apps.length) {
@@ -600,7 +600,6 @@
     function determineUserRooms() {
       if (!state.currentUser) return [];
       if (state.currentUser.isAdmin) {
-        // Admin sees ALL chat rooms
         return ALL_CHAT_ROOMS;
       }
 
@@ -650,11 +649,15 @@
       document.getElementById('activeRoomDesc').innerText = room.desc;
       document.getElementById('activeRoomAvatar').innerHTML = `<i class="fa-solid ${room.icon}"></i>`;
 
-      // Mobile responsiveness: Show right pane, hide left pane
+      // Mobile responsiveness: Targets "sidebar" instead of "leftPane"
       if (window.innerWidth < 768) {
-        document.getElementById('leftPane').classList.add('hidden');
-        document.getElementById('rightPane').classList.remove('hidden');
-        document.getElementById('rightPane').classList.add('flex');
+        const sidebarEl = document.getElementById('sidebar');
+        const rightPaneEl = document.getElementById('rightPane');
+        if (sidebarEl) sidebarEl.classList.add('hidden');
+        if (rightPaneEl) {
+          rightPaneEl.classList.remove('hidden');
+          rightPaneEl.classList.add('flex');
+        }
       }
 
       renderChatRoomsList();
@@ -662,9 +665,13 @@
     }
 
     function backToChatList() {
-      document.getElementById('rightPane').classList.remove('flex');
-      document.getElementById('rightPane').classList.add('hidden');
-      document.getElementById('leftPane').classList.remove('hidden');
+      const sidebarEl = document.getElementById('sidebar');
+      const rightPaneEl = document.getElementById('rightPane');
+      if (rightPaneEl) {
+        rightPaneEl.classList.remove('flex');
+        rightPaneEl.classList.add('hidden');
+      }
+      if (sidebarEl) sidebarEl.classList.remove('hidden');
     }
 
     /* ---------------- DATABASE & LISTENERS ---------------- */
