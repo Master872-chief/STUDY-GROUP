@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matrix Team - Main Group Chat</title>
+  <title>Matrix Team - Portal & Chat Rooms</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -50,18 +50,22 @@
 
   <!-- AUTHENTICATION (LOGIN & REGISTER) MODAL -->
   <div id="authModal" class="fixed inset-0 z-40 bg-waDarkBg/95 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-waDarkPanel border border-gray-200 dark:border-gray-700 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-5">
-      <div class="text-center space-y-1">
-        <div class="w-14 h-14 bg-waLightGreen text-gray-900 rounded-full flex items-center justify-center font-bold text-2xl mx-auto shadow-lg">M</div>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white">MATRIX TEAM</h2>
-        <p class="text-xs text-gray-500 dark:text-gray-400" id="authSubtitle">Access your account portal</p>
+    <div class="bg-white dark:bg-waDarkPanel border border-gray-200 dark:border-gray-700 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4">
+      <div class="text-center space-y-2">
+        <!-- Logo Representation -->
+        <div class="w-16 h-16 bg-gradient-to-tr from-waTeal to-waLightGreen text-white rounded-2xl flex items-center justify-center font-bold text-2xl mx-auto shadow-xl border border-waLightGreen/30">
+          <i class="fa-solid fa-brain text-2xl"></i>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-wider">MATRIX TEAM</h2>
+        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">KNOWLEDGE | INNOVATION | GROWTH</p>
+        <p class="text-xs text-gray-400" id="authSubtitle">Access your account portal</p>
       </div>
 
       <div id="authError" class="hidden text-red-500 text-xs font-semibold text-center bg-red-50 dark:bg-red-950/50 p-2.5 rounded-xl border border-red-200 dark:border-red-800"></div>
 
       <!-- LOGIN VIEW -->
-      <div id="loginView" class="space-y-4">
-        <form onsubmit="handleLogin(event)" class="space-y-3.5">
+      <div id="loginView" class="space-y-3.5">
+        <form onsubmit="handleLogin(event)" class="space-y-3">
           <div>
             <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Group Nickname</label>
             <input type="text" id="loginNickname" placeholder="e.g. Axion~7" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
@@ -88,19 +92,19 @@
       </div>
 
       <!-- REGISTER VIEW -->
-      <div id="registerView" class="hidden space-y-3.5">
-        <form onsubmit="handleRegister(event)" class="space-y-3.5">
+      <div id="registerView" class="hidden space-y-3">
+        <form onsubmit="handleRegister(event)" class="space-y-3">
           <div>
             <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Full Name</label>
             <input type="text" id="joinFullName" placeholder="e.g. Victor John Mana" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
           </div>
           <div>
             <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Subject Combination</label>
-            <input type="text" id="joinCombination" placeholder="e.g. PCM, PCB, PGM" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
+            <input type="text" id="joinCombination" placeholder="e.g. PCM, PCB, PGM, EGM" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
           </div>
           <div>
             <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Preferred Nickname (Group Tag)</label>
-            <input type="text" id="joinNickname" placeholder="e.g. Axion~7, ChemPro" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
+            <input type="text" id="joinNickname" placeholder="e.g. Axion~7" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-waGreen text-gray-800 dark:text-gray-100">
           </div>
           <div>
             <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Email Address</label>
@@ -152,7 +156,9 @@
         <i class="fa-solid fa-bars"></i>
       </button>
       <div class="flex items-center space-x-3 cursor-pointer" onclick="toggleSidebar()">
-        <div class="w-10 h-10 rounded-full bg-waLightGreen flex items-center justify-center font-bold text-gray-900 shadow">M</div>
+        <div class="w-10 h-10 rounded-xl bg-waLightGreen flex items-center justify-center font-bold text-gray-900 shadow">
+          <i class="fa-solid fa-brain text-lg"></i>
+        </div>
         <div>
           <h1 class="font-bold leading-tight text-base">MATRIX TEAM</h1>
           <p class="text-xs text-green-200 flex items-center gap-1">
@@ -168,20 +174,25 @@
     </div>
   </header>
 
-  <!-- Main Screen Container -->
+  <!-- Main Screen Container (WhatsApp Web 2-Pane Layout) -->
   <div class="flex flex-1 overflow-hidden relative">
 
     <!-- Expandable Drawer Sidebar -->
     <aside id="sidebar" class="w-80 bg-white dark:bg-waDarkPanel border-r border-gray-300 dark:border-gray-700 flex flex-col absolute left-0 top-0 z-40 h-full transition-transform duration-300 transform -translate-x-full shadow-2xl">
       
       <div class="bg-waTeal dark:bg-waDarkHeader text-white p-4 flex justify-between items-center">
-        <h2 class="font-bold text-sm uppercase tracking-wider">Options</h2>
+        <div class="flex items-center space-x-2">
+          <div class="w-7 h-7 bg-waLightGreen rounded-lg flex items-center justify-center text-gray-900 font-bold text-xs">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <h2 class="font-bold text-sm uppercase tracking-wider">Matrix Options</h2>
+        </div>
         <button onclick="toggleSidebar()" class="text-lg hover:text-red-400"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <div class="flex border-b border-gray-200 dark:border-gray-700 text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50">
         <button onclick="switchSidebarTab('members')" id="tabBtn-members" class="flex-1 py-3 text-center border-b-2 border-waGreen text-waGreen font-bold">Members</button>
-        <button onclick="switchSidebarTab('topics')" id="tabBtn-topics" class="flex-1 py-3 text-center border-b-2 border-transparent hover:text-waGreen">Topics</button>
+        <button onclick="switchSidebarTab('topics')" id="tabBtn-topics" class="flex-1 py-3 text-center border-b-2 border-transparent hover:text-waGreen">Info</button>
         <button onclick="switchSidebarTab('settings')" id="tabBtn-settings" class="flex-1 py-3 text-center border-b-2 border-transparent hover:text-waGreen">Settings</button>
       </div>
 
@@ -195,8 +206,10 @@
 
         <!-- TOPICS TAB -->
         <div id="sideView-topics" class="hidden space-y-3">
-          <h3 class="text-xs font-bold uppercase text-gray-400">Topics to Cover</h3>
-          <div id="topicsContainer" class="space-y-2"></div>
+          <h3 class="text-xs font-bold uppercase text-gray-400">Knowledge | Innovation | Growth</h3>
+          <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 space-y-2">
+            <p class="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">Welcome to Matrix Team portal. Access your assigned combination chat rooms and collaborate seamlessly on scientific and academic challenges.</p>
+          </div>
         </div>
 
         <!-- SETTINGS TAB -->
@@ -237,10 +250,9 @@
 
           <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-xl border border-gray-200 dark:border-gray-700">
             <h4 class="text-[10px] font-bold uppercase text-gray-400 mb-2 tracking-wider">4. Notifications</h4>
-            <p class="text-[10px] text-gray-500 mb-2 leading-tight">Receive desktop alerts when someone sends a message.</p>
             <div class="flex gap-2">
-              <button onclick="enableNotifications()" class="flex-1 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 text-[11px] font-bold rounded-lg transition border border-green-200 dark:border-green-800">Allow</button>
-              <button onclick="disableNotifications()" class="flex-1 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 text-[11px] font-bold rounded-lg transition border border-gray-300 dark:border-gray-600">Stop</button>
+              <button onclick="enableNotifications()" class="flex-1 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 text-[11px] font-bold rounded-lg transition">Allow</button>
+              <button onclick="disableNotifications()" class="flex-1 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-[11px] font-bold rounded-lg transition">Stop</button>
             </div>
           </div>
 
@@ -254,50 +266,84 @@
       </div>
     </aside>
 
-    <!-- Main Workspace -->
-    <main class="flex-1 flex flex-col bg-[#e5ddd5] dark:bg-waDarkBg overflow-hidden relative">
+    <!-- WhatsApp Web Two-Pane Layout container -->
+    <div class="flex flex-1 w-full h-full overflow-hidden">
       
-      <!-- Pinned Message Banner -->
-      <div id="pinnedBanner" class="hidden bg-waTeal dark:bg-waDarkHeader text-white px-4 py-2 border-b border-gray-700 flex items-center justify-between text-xs shadow-md z-10 shrink-0">
-        <div class="flex items-center gap-2 overflow-hidden">
-          <i class="fa-solid fa-thumbtack text-waLightGreen shrink-0"></i>
-          <span class="font-bold text-waLightGreen shrink-0">Pinned:</span>
-          <span id="pinnedBannerText" class="truncate font-medium"></span>
+      <!-- LEFT PANE: Conversations / Chat Rooms List -->
+      <div id="leftPane" class="w-full md:w-80 lg:w-96 bg-white dark:bg-waDarkPanel border-r border-gray-300 dark:border-gray-700 flex flex-col shrink-0 h-full">
+        <div class="p-3 bg-gray-50 dark:bg-waDarkHeader border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300"><i class="fa-solid fa-comments mr-1.5 text-waGreen"></i> Chat Rooms</h2>
+          <span id="roomCountBadge" class="text-[10px] bg-waGreen/20 text-waGreen font-bold px-2 py-0.5 rounded-full">0 Rooms</span>
         </div>
-        <button onclick="unpinActiveMessage()" class="text-gray-300 hover:text-white shrink-0 ml-2 p-1" title="Unpin"><i class="fa-solid fa-xmark"></i></button>
+        <div id="roomsListContainer" class="flex-1 overflow-y-auto custom-scrollbar divide-y divide-gray-100 dark:divide-gray-800/60">
+          <!-- Populated dynamically based on combination -->
+        </div>
       </div>
 
-      <div id="chatFeed" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar"></div>
-
-      <div id="attachmentPreviewBar" class="hidden bg-white dark:bg-waDarkPanel border-t border-gray-200 dark:border-gray-700 p-2 flex items-center justify-between gap-3 shadow-lg">
-        <div class="flex items-center gap-3 overflow-hidden">
-          <img id="previewImgThumb" src="" class="w-10 h-10 object-cover rounded border border-gray-300 dark:border-gray-600 hidden">
-          <div class="flex flex-col truncate">
-            <span class="text-[11px] font-bold text-waGreen truncate" id="attachmentNameLabel">Screenshot Selected</span>
-            <select id="problemSubject" class="mt-0.5 text-[11px] px-1 py-0.5 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600">
-              <option value="Physics">Physics</option>
-              <option value="Chemistry">Chemistry</option>
-              <option value="Mathematics">Mathematics</option>
-              <option value="General">General</option>
-            </select>
+      <!-- RIGHT PANE: Active Chat Workspace -->
+      <div id="rightPane" class="hidden md:flex flex-1 flex-col bg-[#e5ddd5] dark:bg-waDarkBg overflow-hidden relative h-full">
+        
+        <!-- Active Chat Header -->
+        <div class="bg-waTeal dark:bg-waDarkHeader text-white px-4 py-2.5 flex items-center justify-between shadow-md z-20 shrink-0">
+          <div class="flex items-center space-x-3 overflow-hidden">
+            <!-- Mobile Back Arrow -->
+            <button onclick="backToChatList()" class="md:hidden text-lg p-1 mr-1 text-white hover:text-gray-200 focus:outline-none" title="Back to Rooms">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div id="activeRoomAvatar" class="w-9 h-9 rounded-full bg-waLightGreen flex items-center justify-center font-bold text-gray-900 shadow shrink-0">
+              <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <div class="truncate">
+              <h2 id="activeRoomTitle" class="font-bold text-sm truncate">Announcements & Chats</h2>
+              <p id="activeRoomDesc" class="text-[10px] text-green-200 truncate">Official announcements and general discussions</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-[10px] bg-black/20 px-2 py-1 rounded font-medium hidden sm:inline">Matrix Secure Channel</span>
           </div>
         </div>
-        <button onclick="clearSelectedAttachment()" class="text-gray-400 hover:text-red-500 text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
+
+        <!-- Pinned Message Banner -->
+        <div id="pinnedBanner" class="hidden bg-waTeal dark:bg-waDarkHeader text-white px-4 py-2 border-b border-gray-700 flex items-center justify-between text-xs shadow-md z-10 shrink-0">
+          <div class="flex items-center gap-2 overflow-hidden">
+            <i class="fa-solid fa-thumbtack text-waLightGreen shrink-0"></i>
+            <span class="font-bold text-waLightGreen shrink-0">Pinned:</span>
+            <span id="pinnedBannerText" class="truncate font-medium"></span>
+          </div>
+          <button onclick="unpinActiveMessage()" class="text-gray-300 hover:text-white shrink-0 ml-2 p-1" title="Unpin"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Chat Feed -->
+        <div id="chatFeed" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar"></div>
+
+        <!-- Attachment Preview Bar -->
+        <div id="attachmentPreviewBar" class="hidden bg-white dark:bg-waDarkPanel border-t border-gray-200 dark:border-gray-700 p-2 flex items-center justify-between gap-3 shadow-lg">
+          <div class="flex items-center gap-3 overflow-hidden">
+            <img id="previewImgThumb" src="" class="w-10 h-10 object-cover rounded border border-gray-300 dark:border-gray-600 hidden">
+            <div class="flex flex-col truncate">
+              <span class="text-[11px] font-bold text-waGreen truncate" id="attachmentNameLabel">Screenshot Selected</span>
+            </div>
+          </div>
+          <button onclick="clearSelectedAttachment()" class="text-gray-400 hover:text-red-500 text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Chat Input Footer -->
+        <footer class="bg-white dark:bg-waDarkPanel p-2 border-t border-gray-200 dark:border-gray-700 flex items-center gap-2 z-20 shrink-0">
+          <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)" class="hidden">
+          <button type="button" onclick="triggerFileUpload()" class="w-9 h-9 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-300 flex items-center justify-center text-lg transition" title="Upload Screenshot / Image">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+          <input type="text" id="messageInput" onkeypress="handleKeyPress(event)" placeholder="Type a message..." class="flex-1 px-4 py-2 text-sm rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-waGreen border border-transparent">
+          <button type="button" onclick="sendMessage()" class="w-9 h-9 rounded-full bg-waGreen text-white flex items-center justify-center hover:bg-waTeal shadow transition">
+            <i class="fa-solid fa-paper-plane text-sm"></i>
+          </button>
+        </footer>
       </div>
 
-      <footer class="bg-white dark:bg-waDarkPanel p-2 border-t border-gray-200 dark:border-gray-700 flex items-center gap-2 z-20 shrink-0">
-        <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)" class="hidden">
-        <button type="button" onclick="triggerFileUpload()" class="w-9 h-9 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-300 flex items-center justify-center text-lg transition" title="Upload Screenshot / Image">
-          <i class="fa-solid fa-plus"></i>
-        </button>
-        <input type="text" id="messageInput" onkeypress="handleKeyPress(event)" placeholder="Type a message..." class="flex-1 px-4 py-2 text-sm rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-waGreen border border-transparent">
-        <button type="button" onclick="sendMessage()" class="w-9 h-9 rounded-full bg-waGreen text-white flex items-center justify-center hover:bg-waTeal shadow transition">
-          <i class="fa-solid fa-paper-plane text-sm"></i>
-        </button>
-      </footer>
-    </main>
+    </div>
   </div>
 
+  <!-- Image Modal Viewer -->
   <div id="imageModal" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
     <div class="relative max-w-4xl max-h-[90vh] overflow-hidden flex flex-col items-center">
       <button onclick="closeModal()" class="absolute top-2 right-2 text-white bg-black/50 w-9 h-9 rounded-full flex items-center justify-center text-xl hover:bg-red-600 transition"><i class="fa-solid fa-xmark"></i></button>
@@ -320,21 +366,31 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
+    // All available chat rooms
+    const ALL_CHAT_ROOMS = [
+      { id: 'announcements', name: 'Announcements & Chats', subject: 'General', icon: 'fa-bullhorn', desc: 'Official announcements and general member discussions (All members can chat)' },
+      { id: 'physics', name: 'Physics Chat Room', subject: 'Physics', icon: 'fa-atom', desc: 'Mechanics, Rotational Motion & Electromagnetism' },
+      { id: 'chemistry', name: 'Chemistry Chat Room', subject: 'Chemistry', icon: 'fa-flask', desc: 'Organic Synthesis, Kinetics & Equilibria' },
+      { id: 'mathematics', name: 'Mathematics Chat Room', subject: 'Mathematics', icon: 'fa-square-root-variable', desc: 'Calculus, Differential Equations & Vectors' },
+      { id: 'biology', name: 'Biology Chat Room', subject: 'Biology', icon: 'fa-dna', desc: 'Genetics, Physiology & Ecology' },
+      { id: 'computer', name: 'Computer Chat Room', subject: 'Computer', icon: 'fa-laptop-code', desc: 'Software development, Python & Web systems' },
+      { id: 'economics', name: 'Economics Chat Room', subject: 'Economics', icon: 'fa-chart-line', desc: 'Microeconomics, Macroeconomics & Trade' },
+      { id: 'geography', name: 'Geography Chat Room', subject: 'Geography', icon: 'fa-earth-americas', desc: 'Physical and Human Geography studies' }
+    ];
+
     let state = {
       currentUser: null,
       selectedFileObject: null,
       members: {}, 
       messages: {}, 
-      topics: [
-        { subject: "Physics", name: "Mechanics, Rotational Motion & Electromagnetism" },
-        { subject: "Chemistry", name: "Organic Synthesis & Reaction Kinetics" },
-        { subject: "Mathematics", name: "Differential Equations, Vectors & Calculus" }
-      ]
+      currentRoomId: 'announcements',
+      userRooms: []
     };
 
     let notificationsEnabled = localStorage.getItem('matrix_notify') === 'true';
     let lastProcessedTimestamp = 0;
     let isInitialSyncDone = false;
+    let currentRoomListener = null;
 
     function showLoader(text = "Processing...") {
       document.getElementById('loaderText').innerText = text;
@@ -387,7 +443,6 @@
 
       try {
         const nickKey = nickname.replace(/[.#$[\]]/g, "_");
-        
         const userSnap = await db.ref(`members/${nickKey}`).once('value');
         if (!userSnap.exists()) {
           throw new Error("Nickname not found. Please register or check your spelling.");
@@ -451,7 +506,7 @@
         const existingMemberSnap = await db.ref(`members/${nickKey}`).once('value');
         if (existingMemberSnap.exists()) {
           hideLoader();
-          errBox.innerText = "This nickname is already registered and taken by another member. Please choose a different nickname.";
+          errBox.innerText = "This nickname is already registered and taken. Please choose another.";
           errBox.classList.remove('hidden');
           return;
         }
@@ -502,7 +557,6 @@
           if (savedUser) {
             state.currentUser = JSON.parse(savedUser);
           } else {
-            // Recover user data from database if localStorage was cleared
             const membersSnap = await db.ref('members').once('value');
             if (membersSnap.exists()) {
               const members = membersSnap.val();
@@ -558,8 +612,84 @@
       });
     }
 
-    function initDatabaseListeners() {
-      db.ref('messages').on('value', (snapshot) => {
+    /* ---------------- ROOM ACCESS & FILTERING LOGIC ---------------- */
+    function determineUserRooms() {
+      if (!state.currentUser) return [];
+      if (state.currentUser.isAdmin) {
+        // Admin sees ALL chat rooms
+        return ALL_CHAT_ROOMS;
+      }
+
+      const combo = (state.currentUser.combo || '').toUpperCase();
+      return ALL_CHAT_ROOMS.filter(room => {
+        if (room.id === 'announcements') return true;
+        if (room.subject === 'Physics' && combo.includes('P')) return true;
+        if (room.subject === 'Chemistry' && combo.includes('C')) return true;
+        if (room.subject === 'Mathematics' && combo.includes('M')) return true;
+        if (room.subject === 'Biology' && combo.includes('B')) return true;
+        if (room.subject === 'Computer' && (combo.includes('COMP') || combo.includes('CS') || combo.includes('ICT'))) return true;
+        if (room.subject === 'Economics' && combo.includes('E')) return true;
+        if (room.subject === 'Geography' && combo.includes('G')) return true;
+        return false;
+      });
+    }
+
+    function renderChatRoomsList() {
+      const container = document.getElementById('roomsListContainer');
+      state.userRooms = determineUserRooms();
+      document.getElementById('roomCountBadge').innerText = `${state.userRooms.length} Rooms`;
+
+      container.innerHTML = state.userRooms.map(room => {
+        const isActive = state.currentRoomId === room.id;
+        return `
+          <div onclick="selectRoom('${room.id}')" class="p-3.5 flex items-center space-x-3 cursor-pointer transition ${isActive ? 'bg-gray-100 dark:bg-waDarkHeader border-l-4 border-waGreen' : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'}">
+            <div class="w-10 h-10 rounded-full bg-waGreen/20 text-waGreen flex items-center justify-center font-bold text-base shrink-0">
+              <i class="fa-solid ${room.icon}"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between items-baseline mb-0.5">
+                <h4 class="font-bold text-xs text-gray-900 dark:text-white truncate">${room.name}</h4>
+              </div>
+              <p class="text-[11px] text-gray-500 dark:text-gray-400 truncate">${room.desc}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectRoom(roomId) {
+      state.currentRoomId = roomId;
+      const room = ALL_CHAT_ROOMS.find(r => r.id === roomId) || ALL_CHAT_ROOMS[0];
+
+      // Update Header
+      document.getElementById('activeRoomTitle').innerText = room.name;
+      document.getElementById('activeRoomDesc').innerText = room.desc;
+      document.getElementById('activeRoomAvatar').innerHTML = `<i class="fa-solid ${room.icon}"></i>`;
+
+      // Mobile responsiveness: Show right pane, hide left pane
+      if (window.innerWidth < 768) {
+        document.getElementById('leftPane').classList.add('hidden');
+        document.getElementById('rightPane').classList.remove('hidden');
+        document.getElementById('rightPane').classList.add('flex');
+      }
+
+      renderChatRoomsList();
+      initRoomListener();
+    }
+
+    function backToChatList() {
+      document.getElementById('rightPane').classList.remove('flex');
+      document.getElementById('rightPane').classList.add('hidden');
+      document.getElementById('leftPane').classList.remove('hidden');
+    }
+
+    /* ---------------- DATABASE & LISTENERS ---------------- */
+    function initRoomListener() {
+      if (currentRoomListener) {
+        db.ref(`rooms/${state.currentRoomId}/messages`).off('value', currentRoomListener);
+      }
+
+      currentRoomListener = db.ref(`rooms/${state.currentRoomId}/messages`).on('value', (snapshot) => {
         state.messages = snapshot.val() || {};
         renderChatFeed();
         checkPinnedBanner();
@@ -575,14 +705,16 @@
           } else if (latestTimestamp > lastProcessedTimestamp) {
             if (notificationsEnabled && latestMsg && latestMsg.sender !== state.currentUser?.nickname) {
               if (Notification.permission === "granted") {
-                new Notification(`Matrix Team: ${latestMsg.sender}`, { body: latestMsg.text || "Sent a screenshot" });
+                new Notification(`Matrix Team (${state.currentRoomId}): ${latestMsg.sender}`, { body: latestMsg.text || "Sent a photo" });
               }
             }
             lastProcessedTimestamp = latestTimestamp;
           }
         }
       });
+    }
 
+    function initDatabaseListeners() {
       db.ref('members').on('value', (snapshot) => {
         state.members = snapshot.val() || {};
         renderActiveMembers();
@@ -590,7 +722,6 @@
 
       if (state.currentUser) {
         const myNicknameKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
-        
         const myStatusRef = db.ref(`members/${myNicknameKey}/status`);
         db.ref('.info/connected').on('value', (snapshot) => {
           if (snapshot.val() === false) return;
@@ -613,11 +744,12 @@
       if (!state.currentUser) return;
       document.getElementById('currentUserBadge').innerText = `${state.currentUser.nickname} [${state.currentUser.combo}] ${state.currentUser.isAdmin ? '(ADMIN)' : ''}`;
       populateProfileSettings();
-      renderTopics();
+      renderChatRoomsList();
+      selectRoom('announcements'); // default room
       initDatabaseListeners();
     }
 
-    /* ---------------- SETTINGS FUNCTIONS ---------------- */
+    /* ---------------- SETTINGS & HELPERS ---------------- */
     function populateProfileSettings() {
       if(state.currentUser) {
         document.getElementById('setProfileName').innerText = state.currentUser.fullName;
@@ -642,10 +774,8 @@
           alert("Password successfully updated!");
         }).catch((error) => {
           hideLoader();
-          alert("Error updating password: " + error.message + ". Please log out and log back in before changing password.");
+          alert("Error updating password: " + error.message + ". Please log out and back in first.");
         });
-      } else {
-        alert("No active authenticated session found. Please log in again.");
       }
     }
 
@@ -657,17 +787,13 @@
 
     function enableNotifications() {
       if (!("Notification" in window)) {
-        alert("Your browser does not support desktop notifications.");
-      } else if (Notification.permission === "granted") {
-        notificationsEnabled = true;
-        localStorage.setItem('matrix_notify', 'true');
-        alert("Notifications are now active!");
-      } else if (Notification.permission !== "denied") {
+        alert("Notifications not supported.");
+      } else {
         Notification.requestPermission().then((permission) => {
           if (permission === "granted") {
             notificationsEnabled = true;
             localStorage.setItem('matrix_notify', 'true');
-            alert("Notifications successfully enabled!");
+            alert("Notifications enabled!");
           }
         });
       }
@@ -676,11 +802,11 @@
     function disableNotifications() {
       notificationsEnabled = false;
       localStorage.setItem('matrix_notify', 'false');
-      alert("Notifications have been stopped.");
+      alert("Notifications stopped.");
     }
 
     function deleteAccount() {
-      const confirmDelete = confirm("Are you sure you want to delete your account? This will remove you from the team roster. This cannot be undone.");
+      const confirmDelete = confirm("Are you sure you want to delete your account?");
       if (confirmDelete && state.currentUser) {
         showLoader("Deleting Account...");
         const myNicknameKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
@@ -689,39 +815,30 @@
           if (user) user.delete();
           localStorage.removeItem('matrixUser');
           hideLoader();
-          alert("Account successfully deleted.");
           location.reload();
-        }).catch((error) => {
-          hideLoader();
-          alert("Error deleting account. Please log out and log back in, then try again.");
         });
       }
     }
 
-    /* ---------------- ADMIN TERMINATE MEMBER ---------------- */
     async function terminateMember(nickKey, memberEmail, memberNickname) {
       if (!state.currentUser || !state.currentUser.isAdmin) return;
-      const confirmTerminate = confirm(`Are you sure you want to terminate ${memberNickname} from the team? They will be instantly kicked out and blocked from re-entering.`);
+      const confirmTerminate = confirm(`Terminate ${memberNickname}? They will be permanently blocked.`);
       if (!confirmTerminate) return;
 
       showLoader("Terminating member...");
-
       try {
         const safeEmailKey = memberEmail.replace(/[.#$[\]]/g, "_");
-        
         await db.ref(`bannedNicknames/${nickKey}`).set(true);
         await db.ref(`bannedEmails/${safeEmailKey}`).set(true);
         await db.ref(`members/${nickKey}`).remove();
-
         hideLoader();
-        alert(`${memberNickname} has been successfully terminated.`);
+        alert(`${memberNickname} terminated.`);
       } catch (error) {
         hideLoader();
-        alert("Error terminating member: " + error.message);
+        alert("Error: " + error.message);
       }
     }
 
-    /* ---------------- SIDEBAR CONTROLS ---------------- */
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
     function openSidebarTab(tab) { toggleSidebar(); switchSidebarTab(tab); }
     function switchSidebarTab(tab) {
@@ -736,7 +853,6 @@
     }
     function toggleTheme() { document.documentElement.classList.toggle('dark'); }
 
-    /* ---------------- RENDER FUNCTIONS ---------------- */
     function renderActiveMembers() {
       const list = document.getElementById('activeMembersList');
       const membersEntries = Object.entries(state.members);
@@ -744,7 +860,6 @@
       document.getElementById('activeCountLabel').innerText = `${activeCount} Online Members`;
 
       if(membersEntries.length === 0) return;
-
       const isAdminUser = state.currentUser && state.currentUser.isAdmin;
 
       list.innerHTML = membersEntries.map(([nickKey, m]) => {
@@ -763,33 +878,23 @@
             </div>
             <div class="flex items-center space-x-2 shrink-0">
               ${isAdminUser && !isMe ? `
-                <button onclick="terminateMember('${nickKey}', '${m.email}', '${m.nickname}')" class="px-2 py-0.5 bg-red-600 hover:bg-red-700 text-white text-[9px] font-bold rounded shadow transition" title="Terminate Member">Terminate</button>
+                <button onclick="terminateMember('${nickKey}', '${m.email}', '${m.nickname}')" class="px-2 py-0.5 bg-red-600 hover:bg-red-700 text-white text-[9px] font-bold rounded shadow transition">Terminate</button>
               ` : ''}
-              <span class="w-2.5 h-2.5 rounded-full ${m.status==='online'?'bg-green-500 shadow-[0_0_5px_#22c55e]':'bg-gray-400 opacity-50'}"></span>
+              <span class="w-2.5 h-2.5 rounded-full ${m.status==='online'?'bg-green-500':'bg-gray-400 opacity-50'}"></span>
             </div>
           </div>
         `;
       }).join('');
     }
 
-    function renderTopics() {
-      const container = document.getElementById('topicsContainer');
-      container.innerHTML = state.topics.map(t => `
-        <div class="p-2 rounded bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700">
-          <span class="text-[9px] font-bold text-waGreen uppercase tracking-wide">${t.subject}</span>
-          <h4 class="font-semibold text-[11px] text-gray-800 dark:text-gray-200">${t.name}</h4>
-        </div>
-      `).join('');
-    }
-
-    /* ---------------- CHAT, SCREENSHOTS & PINNING ---------------- */
+    /* ---------------- MESSAGING & UPLOADS ---------------- */
     function triggerFileUpload() { document.getElementById('fileInput').click(); }
     
     function handleFileSelect(event) {
       const file = event.target.files[0];
       if (file) {
         if (!file.type.startsWith('image/')) {
-          alert("Please select an image file or screenshot.");
+          alert("Please select an image file.");
           return;
         }
         state.selectedFileObject = file;
@@ -812,7 +917,6 @@
 
     function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
-    // Compress image helper to prevent Firebase 1MB Realtime DB limit errors
     function compressImage(file, maxWidth = 800, quality = 0.7) {
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -846,16 +950,15 @@
 
       const now = new Date();
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const roomMessagesRef = db.ref(`rooms/${state.currentRoomId}/messages`);
 
       if (state.selectedFileObject) {
         const file = state.selectedFileObject;
-        const subject = document.getElementById('problemSubject').value;
-        
-        showLoader("Compressing & uploading screenshot...");
+        showLoader("Uploading image...");
 
         try {
           const compressedBase64 = await compressImage(file);
-          const newMsgRef = db.ref('messages').push();
+          const newMsgRef = roomMessagesRef.push();
           const problemMessage = {
             type: "problem",
             sender: state.currentUser.nickname,
@@ -863,10 +966,9 @@
             senderInitial: state.currentUser.initial,
             isAdmin: state.currentUser.isAdmin || false,
             text: text || `Screenshot: ${file.name}`,
-            subject: subject,
+            subject: state.currentRoomId,
             imageUrl: compressedBase64,
             status: "unsolved",
-            isUploading: false,
             time: timeStr,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
             pinned: false,
@@ -879,7 +981,7 @@
           input.value = '';
         } catch (err) {
           hideLoader();
-          alert("Error processing image: " + err.message);
+          alert("Error: " + err.message);
         }
       } else {
         const newMessage = {
@@ -895,7 +997,7 @@
           pinnedAt: null
         };
 
-        db.ref('messages').push(newMessage);
+        roomMessagesRef.push(newMessage);
         input.value = '';
       }
     }
@@ -904,7 +1006,7 @@
       if (!state.currentUser) return;
       const msg = state.messages[key];
       if (msg && (msg.sender === state.currentUser.nickname || state.currentUser.isAdmin)) {
-        db.ref(`messages/${key}`).remove();
+        db.ref(`rooms/${state.currentRoomId}/messages/${key}`).remove();
       }
     }
 
@@ -917,9 +1019,9 @@
       const isPinned = msg.pinned && (now - (msg.pinnedAt || 0) < 86400000);
 
       if (isPinned) {
-        db.ref(`messages/${key}`).update({ pinned: false, pinnedAt: null });
+        db.ref(`rooms/${state.currentRoomId}/messages/${key}`).update({ pinned: false, pinnedAt: null });
       } else {
-        db.ref(`messages/${key}`).update({ pinned: true, pinnedAt: firebase.database.ServerValue.TIMESTAMP });
+        db.ref(`rooms/${state.currentRoomId}/messages/${key}`).update({ pinned: true, pinnedAt: firebase.database.ServerValue.TIMESTAMP });
       }
     }
 
@@ -928,7 +1030,7 @@
       const now = Date.now();
       for (const [key, m] of msgEntries) {
         if (m.pinned && (now - (m.pinnedAt || 0) < 86400000)) {
-          db.ref(`messages/${key}`).update({ pinned: false, pinnedAt: null });
+          db.ref(`rooms/${state.currentRoomId}/messages/${key}`).update({ pinned: false, pinnedAt: null });
           break;
         }
       }
@@ -949,32 +1051,26 @@
       }
 
       if (activePinned) {
-        bannerText.innerText = `${activePinned.sender}: ${activePinned.text || 'Screenshot'}`;
+        bannerText.innerText = `${activePinned.sender}: ${activePinned.text || 'Image'}`;
         banner.classList.remove('hidden');
       } else {
         banner.classList.add('hidden');
       }
     }
 
-    /* ---------------- USER PROFILE MODAL ---------------- */
     function showUserProfile(nickKey) {
       if (!nickKey) return;
       const user = state.members[nickKey];
-      
       if (user) {
         document.getElementById('profileInit').innerText = user.initial || 'U';
         document.getElementById('profileNick').innerText = user.nickname;
         document.getElementById('profileName').innerText = user.fullName;
         document.getElementById('profileCombo').innerText = user.combo;
         document.getElementById('profileModal').classList.remove('hidden');
-      } else {
-        alert("User details not found. They might be offline or no longer in the group.");
       }
     }
 
-    function closeProfileModal() {
-      document.getElementById('profileModal').classList.add('hidden');
-    }
+    function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
 
     function renderChatFeed() {
       const feed = document.getElementById('chatFeed');
@@ -982,7 +1078,7 @@
       const now = Date.now();
 
       if(msgEntries.length === 0) {
-        feed.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center p-6 text-gray-400 space-y-2"><i class="fa-regular fa-comments text-3xl mb-1"></i><p class="text-xs font-semibold">No messages yet.</p></div>`;
+        feed.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center p-6 text-gray-400 space-y-2"><i class="fa-regular fa-comments text-3xl mb-1"></i><p class="text-xs font-semibold">No messages in this room yet. Start the conversation!</p></div>`;
         return;
       }
 
@@ -1020,7 +1116,7 @@
                 <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} my-1">
                   <div class="max-w-[85%] sm:max-w-sm bg-white dark:bg-waDarkIncoming rounded-xl p-2.5 shadow-sm border border-gray-200 dark:border-gray-700/50 space-y-2 ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}">
                     <div class="flex justify-between items-center">
-                      <span class="text-[8px] uppercase font-bold px-1.5 py-0.5 rounded bg-waGreen/10 text-waGreen">${m.subject}</span>
+                      <span class="text-[8px] uppercase font-bold px-1.5 py-0.5 rounded bg-waGreen/10 text-waGreen">${m.subject || 'Media'}</span>
                       <div class="flex items-center gap-1.5">
                         <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-400 hover:text-waLightGreen'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
                         ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-400 hover:text-red-500 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
@@ -1038,28 +1134,15 @@
                     <div class="flex items-center justify-between text-[9px] bg-gray-50 dark:bg-waDarkBg p-1.5 rounded-lg border border-gray-100 dark:border-gray-800">
                       <div class="flex items-center space-x-1.5">
                         <span class="${m.status==='unsolved'?'text-amber-500 font-bold':'text-gray-500'}"><i class="fa-solid fa-circle-dot"></i> Unsolved</span>
-                        
                         ${m.status==='solving' || m.status==='solved' ? `<span class="text-gray-500">•</span>` : ''}
-                        
-                        ${m.status==='solving' ? `
-                        <span onclick="showUserProfile('${solvingKey}')" class="text-blue-500 font-bold flex items-center gap-1 cursor-pointer hover:underline">
-                          <span class="w-3.5 h-3.5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[7px]" title="${m.solvingUser ? m.solvingUser.name : ''}">${m.solvingUser ? m.solvingUser.initial : ''}</span>
-                          Solving
-                        </span>` : ''}
-                        
-                        ${m.status==='solved' ? `
-                        <span onclick="showUserProfile('${solvedKey}')" class="text-green-500 font-bold flex items-center gap-1 cursor-pointer hover:underline">
-                          <span class="w-3.5 h-3.5 rounded-full bg-green-500 text-white flex items-center justify-center text-[7px]" title="${m.solvedUser ? m.solvedUser.name : ''}">${m.solvedUser ? m.solvedUser.initial : ''}</span>
-                          Solved
-                        </span>` : ''}
+                        ${m.status==='solving' ? `<span class="text-blue-500 font-bold">Solving</span>` : ''}
+                        ${m.status==='solved' ? `<span class="text-green-500 font-bold">Solved</span>` : ''}
                       </div>
-
                       <div class="flex gap-1 ml-2">
                         ${m.status === 'unsolved' ? `<button onclick="setSolving('${key}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow transition">Solving</button>`: ''}
                         ${m.status === 'solving' ? `<button onclick="setSolved('${key}')" class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white font-semibold rounded shadow transition">Mark Solved</button>`: ''}
                       </div>
                     </div>
-
                     <p class="text-[8px] text-right opacity-60">${m.time}</p>
                   </div>
                 </div>
@@ -1074,7 +1157,7 @@
 
     function setSolving(key) {
       if (!state.currentUser) return;
-      db.ref(`messages/${key}`).update({
+      db.ref(`rooms/${state.currentRoomId}/messages/${key}`).update({
         status: 'solving',
         solvingUser: { name: state.currentUser.nickname, initial: state.currentUser.initial }
       });
@@ -1082,13 +1165,8 @@
 
     function setSolved(key) {
       if (!state.currentUser) return;
-      const msg = state.messages[key];
-      const solverName = msg && msg.solvingUser ? msg.solvingUser.name : state.currentUser.nickname;
-      const solverInitial = msg && msg.solvingUser ? msg.solvingUser.initial : state.currentUser.initial;
-
-      db.ref(`messages/${key}`).update({
+      db.ref(`rooms/${state.currentRoomId}/messages/${key}`).update({
         status: 'solved',
-        solvedUser: { name: solverName, initial: solverInitial },
         solvingUser: null
       });
     }
