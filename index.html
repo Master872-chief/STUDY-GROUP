@@ -199,15 +199,39 @@
 
         <!-- View: User Settings -->
         <div id="sideView-settings" class="hidden p-4 space-y-5">
+          
+          <!-- Independent Profile Section -->
           <div>
-            <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Account Summary</h4>
+            <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Profile Details</h4>
             <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-lg border border-gray-200 dark:border-gray-700 space-y-2 text-xs text-gray-700 dark:text-gray-300">
               <p><strong>Name:</strong> <span id="setProfileName"></span></p>
+              <p><strong>Nickname:</strong> <span id="setProfileNick2"></span></p>
               <p><strong>Email:</strong> <span id="setProfileEmail"></span></p>
-              <button onclick="promptChangePassword()" class="mt-2 w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 py-1.5 rounded text-[11px] font-bold transition">Update Password</button>
             </div>
           </div>
           
+          <!-- Independent Change Password Section -->
+          <div>
+            <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Change Password</h4>
+            <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-lg border border-gray-200 dark:border-gray-700 space-y-2 flex flex-col">
+              <input type="password" id="newPasswordInput" class="w-full bg-white dark:bg-waDarkBg text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded p-1.5 text-xs focus:outline-none focus:border-waGreen" placeholder="Enter new password">
+              <button onclick="executeChangePassword()" class="mt-2 w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 py-1.5 rounded text-[11px] font-bold transition">Update Password</button>
+            </div>
+          </div>
+
+          <!-- Admin Recommendation (Formspree) -->
+          <div>
+             <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Recommendation to Admin</h4>
+             <!-- REPLACE YOUR_FORMSPREE_ENDPOINT WITH YOUR ACTUAL FORMSPREE LINK -->
+             <form action="YOUR_FORMSPREE_ENDPOINT" method="POST" class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-lg border border-gray-200 dark:border-gray-700 space-y-2 flex flex-col">
+                <input type="hidden" name="Sender_Email" id="formspreeEmail">
+                <input type="hidden" name="Sender_Nickname" id="formspreeNick">
+                <textarea name="Recommendation" class="w-full bg-white dark:bg-waDarkBg text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded p-1.5 text-xs focus:outline-none focus:border-waGreen resize-none h-16" placeholder="Write a comment or feature request..." required></textarea>
+                <button type="submit" class="w-full bg-waGreen hover:bg-waTeal text-white font-bold py-1.5 rounded text-[11px] shadow-md transition-all">Send Recommendation</button>
+             </form>
+          </div>
+
+          <!-- Preferences -->
           <div>
             <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Preferences</h4>
             <div class="space-y-3">
@@ -247,7 +271,6 @@
           <div class="w-10 h-10 rounded-full bg-waGreen text-white flex items-center justify-center text-lg shadow-sm shrink-0" id="activeRoomAvatar"></div>
           <div class="min-w-0">
             <h2 class="font-bold text-sm text-gray-900 dark:text-white truncate" id="activeRoomTitle">Select a Room</h2>
-            <p class="text-[11px] text-gray-500 dark:text-gray-400 truncate" id="activeRoomDesc">Join a conversation</p>
           </div>
         </div>
       </header>
@@ -317,6 +340,22 @@
     </div>
   </div>
 
+  <!-- Solving Members Modal Pane -->
+  <div id="solvingModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-waDarkPanel rounded-xl shadow-2xl w-full max-w-xs overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div class="bg-waTeal p-4 text-center relative">
+        <button onclick="closeSolvingModal()" class="absolute top-2 right-2 text-white/70 hover:text-white p-1"><i class="fa-solid fa-times text-lg"></i></button>
+        <h3 class="text-white font-bold text-sm">Members Solving Question</h3>
+      </div>
+      <div id="solvingModalList" class="p-4 bg-gray-50 dark:bg-waDarkBg space-y-2 max-h-60 overflow-y-auto custom-scrollbar text-xs">
+        <!-- Dynamically populated list -->
+      </div>
+      <div class="p-3 border-t border-gray-200 dark:border-gray-700 text-center bg-white dark:bg-waDarkPanel">
+        <button onclick="closeSolvingModal()" class="px-6 py-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-full transition">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Full Screen Image Modal -->
   <div id="imageModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModal()">
     <button class="absolute top-4 right-4 text-white hover:text-red-400 text-3xl p-2 focus:outline-none"><i class="fa-solid fa-times"></i></button>
@@ -343,14 +382,14 @@
 
     /* ---------------- STATE MANAGEMENT ---------------- */
     const ALL_CHAT_ROOMS = [
-      { id: 'announcements', name: 'Board Announcements', icon: 'fa-bullhorn', desc: 'Official matrix updates', subject: 'General' },
-      { id: 'physics', name: 'Physics Mechanics', icon: 'fa-atom', desc: 'Kinematics, forces, energy', subject: 'Physics' },
-      { id: 'chemistry', name: 'Organic Chemistry', icon: 'fa-flask', desc: 'Reactions, nomenclature', subject: 'Chemistry' },
-      { id: 'mathematics', name: 'Advanced Math', icon: 'fa-calculator', desc: 'Calculus, algebra, stats', subject: 'Mathematics' },
-      { id: 'biology', name: 'Biology Genetics', icon: 'fa-dna', desc: 'Cells, genetics, anatomy', subject: 'Biology' },
-      { id: 'computer', name: 'Computer Science', icon: 'fa-laptop-code', desc: 'Programming, logic, IT', subject: 'Computer' },
-      { id: 'economics', name: 'Economics', icon: 'fa-chart-line', desc: 'Micro & Macro economics', subject: 'Economics' },
-      { id: 'geography', name: 'Physical Geography', icon: 'fa-earth-africa', desc: 'Earth systems, mapping', subject: 'Geography' }
+      { id: 'announcements', name: 'Announcements Chatroom', icon: 'fa-bullhorn', subject: 'General' },
+      { id: 'physics', name: 'Physics Chatroom', icon: 'fa-atom', subject: 'Physics' },
+      { id: 'chemistry', name: 'Chemistry Chatroom', icon: 'fa-flask', subject: 'Chemistry' },
+      { id: 'mathematics', name: 'Mathematics Chatroom', icon: 'fa-calculator', subject: 'Mathematics' },
+      { id: 'biology', name: 'Biology Chatroom', icon: 'fa-dna', subject: 'Biology' },
+      { id: 'computer', name: 'Computer Chatroom', icon: 'fa-laptop-code', subject: 'Computer' },
+      { id: 'economics', name: 'Economics Chatroom', icon: 'fa-chart-line', subject: 'Economics' },
+      { id: 'geography', name: 'Geography Chatroom', icon: 'fa-earth-africa', subject: 'Geography' }
     ];
 
     let state = {
@@ -359,13 +398,16 @@
       userRooms: [],
       members: {},
       messages: {},
-      selectedFileObject: null
+      selectedFileObject: null,
+      unreadCounts: {},
+      roomMessagesCount: {}
     };
 
     let notificationsEnabled = localStorage.getItem('matrix_notify') === 'true';
     let currentRoomListener = null;
     let isInitialSyncDone = false;
     let lastProcessedTimestamp = 0;
+    let globalRoomListeners = {};
 
     /* ---------------- UI CONTROLS ---------------- */
     function showLoader(msg) { document.getElementById('loaderText').innerText = msg; document.getElementById('globalLoader').classList.remove('hidden'); }
@@ -609,16 +651,17 @@
 
       container.innerHTML = state.userRooms.map(room => {
         const isActive = state.currentRoomId === room.id;
+        const unread = state.unreadCounts[room.id] || 0;
+        const badgeHtml = unread > 0 ? `<span class="bg-waLightGreen text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm">${unread}</span>` : '';
+
         return `
           <div onclick="selectRoom('${room.id}')" class="p-3.5 flex items-center space-x-3 cursor-pointer transition ${isActive ? 'bg-gray-100 dark:bg-waDarkHeader border-l-4 border-waGreen' : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'}">
             <div class="w-10 h-10 rounded-full bg-waGreen/20 text-waGreen flex items-center justify-center font-bold text-base shrink-0">
               <i class="fa-solid ${room.icon}"></i>
             </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex justify-between items-baseline mb-0.5">
-                <h4 class="font-bold text-xs text-gray-900 dark:text-white truncate">${room.name}</h4>
-              </div>
-              <p class="text-[11px] text-gray-500 dark:text-gray-400 truncate">${room.desc}</p>
+            <div class="flex-1 min-w-0 flex items-center justify-between">
+              <h4 class="font-bold text-xs text-gray-900 dark:text-white truncate">${room.name}</h4>
+              ${badgeHtml}
             </div>
           </div>
         `;
@@ -628,11 +671,12 @@
     /* 2-Pane Switch Logic (WhatsApp Responsive Style) */
     function selectRoom(roomId) {
       state.currentRoomId = roomId;
+      state.unreadCounts[roomId] = 0;
+      
       const room = ALL_CHAT_ROOMS.find(r => r.id === roomId) || ALL_CHAT_ROOMS[0];
 
       // Update Conversation Header
       document.getElementById('activeRoomTitle').innerText = room.name;
-      document.getElementById('activeRoomDesc').innerText = room.desc;
       document.getElementById('activeRoomAvatar').innerHTML = `<i class="fa-solid ${room.icon}"></i>`;
 
       // On small screens, hide left rooms pane and display right conversation pane
@@ -662,6 +706,32 @@
     }
 
     /* ---------------- DATABASE & LISTENERS ---------------- */
+    function initGlobalBadges() {
+      state.userRooms.forEach(room => {
+        if (!globalRoomListeners[room.id]) {
+          globalRoomListeners[room.id] = true;
+          db.ref(`rooms/${room.id}/messages`).on('value', snap => {
+             const count = snap.numChildren();
+             if (state.currentRoomId === room.id) {
+               state.roomMessagesCount[room.id] = count;
+               state.unreadCounts[room.id] = 0;
+             } else {
+               if (state.roomMessagesCount[room.id] !== undefined) {
+                  const diff = count - state.roomMessagesCount[room.id];
+                  if (diff > 0) state.unreadCounts[room.id] = diff;
+               } else {
+                  state.roomMessagesCount[room.id] = count;
+                  state.unreadCounts[room.id] = 0;
+               }
+             }
+             if (document.getElementById('roomsListContainer')) {
+               renderChatRoomsList(); 
+             }
+          });
+        }
+      });
+    }
+
     function initRoomListener() {
       if (currentRoomListener) {
         db.ref(`rooms/${state.currentRoomId}/messages`).off('value', currentRoomListener);
@@ -723,6 +793,7 @@
       document.getElementById('currentUserBadge').innerText = `${state.currentUser.nickname} [${state.currentUser.combo}] ${state.currentUser.isAdmin ? '(ADMIN)' : ''}`;
       populateProfileSettings();
       renderChatRoomsList();
+      initGlobalBadges();
       selectRoom('announcements'); // default room
       initDatabaseListeners();
     }
@@ -733,13 +804,29 @@
         document.getElementById('setProfileName').innerText = state.currentUser.fullName;
         document.getElementById('setProfileNick').innerText = state.currentUser.nickname;
         document.getElementById('setProfileCombo').innerText = state.currentUser.combo;
-        document.getElementById('setProfileEmail').innerText = state.currentUser.email || auth.currentUser?.email || 'N/A';
+        
+        const emailToUse = state.currentUser.email || auth.currentUser?.email || 'N/A';
+        const profileNick2 = document.getElementById('setProfileNick2');
+        if(profileNick2) profileNick2.innerText = state.currentUser.nickname;
+        
+        const profileEmail = document.getElementById('setProfileEmail');
+        if(profileEmail) profileEmail.innerText = emailToUse;
+        
+        const fsNick = document.getElementById('formspreeNick');
+        if(fsNick) fsNick.value = state.currentUser.nickname;
+        
+        const fsEmail = document.getElementById('formspreeEmail');
+        if(fsEmail) fsEmail.value = emailToUse;
       }
     }
 
-    function promptChangePassword() {
-      const newPass = prompt("Enter your new password (minimum 6 characters):");
-      if (!newPass) return;
+    function executeChangePassword() {
+      const passInput = document.getElementById('newPasswordInput');
+      const newPass = passInput.value.trim();
+      if (!newPass) {
+        alert("Please enter a new password.");
+        return;
+      }
       if (newPass.length < 6) {
         alert("Password must be at least 6 characters long.");
         return;
@@ -750,9 +837,10 @@
         user.updatePassword(newPass).then(() => {
           hideLoader();
           alert("Password successfully updated!");
+          passInput.value = '';
         }).catch((error) => {
           hideLoader();
-          alert("Error updating password: " + error.message + ". Please log out and back in first.");
+          alert("Error updating password: " + error.message + ". Please log out and back in first to verify your session.");
         });
       }
     }
@@ -1049,6 +1137,32 @@
 
     function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
 
+    function showSolvingModal(messageKey) {
+      const msg = state.messages[messageKey];
+      if (!msg || !msg.solvingUsers) return;
+      const users = Object.values(msg.solvingUsers);
+      const listContainer = document.getElementById('solvingModalList');
+      
+      if (users.length === 0) {
+        listContainer.innerHTML = `<p class="text-gray-400 text-center">No one is currently solving this.</p>`;
+      } else {
+        listContainer.innerHTML = users.map(u => `
+          <div class="flex items-center justify-between p-2 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-2">
+              <div class="w-7 h-7 rounded-full bg-waGreen text-white font-bold text-xs flex items-center justify-center">${u.initial}</div>
+              <div>
+                <p class="font-bold text-gray-800 dark:text-gray-100">${u.name}</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400">${u.fullName || ''}</p>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+      document.getElementById('solvingModal').classList.remove('hidden');
+    }
+
+    function closeSolvingModal() { document.getElementById('solvingModal').classList.add('hidden'); }
+
     function renderChatFeed() {
       const feed = document.getElementById('chatFeed');
       const msgEntries = Object.entries(state.messages);
@@ -1062,7 +1176,7 @@
       msgEntries.sort((a, b) => (a[1].timestamp || 0) - (b[1].timestamp || 0));
 
       feed.innerHTML = `
-        <div class="w-full max-w-5xl mx-auto space-y-2.5 px-2 sm:px-6">
+        <div class="w-full mx-auto space-y-2.5 px-6 sm:px-12 md:px-24 lg:px-32">
           ${msgEntries.map(([key, m]) => {
             const isMe = state.currentUser && m.sender === state.currentUser.nickname;
             const canDelete = isMe || (state.currentUser && state.currentUser.isAdmin);
@@ -1086,8 +1200,8 @@
                 </div>
               `;
             } else if (m.type === 'problem') {
-              const solvingKey = m.solvingUser && m.solvingUser.name ? m.solvingUser.name.replace(/[.#$[\]]/g, "_") : '';
-              const solvedKey = m.solvedUser && m.solvedUser.name ? m.solvedUser.name.replace(/[.#$[\]]/g, "_") : '';
+              const solvingUsersObj = m.solvingUsers || {};
+              const solvingArr = Object.values(solvingUsersObj);
 
               return `
                 <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} my-1">
@@ -1109,14 +1223,24 @@
                     ` : ''}
 
                     <div class="flex items-center justify-between text-[9px] bg-gray-50 dark:bg-waDarkBg p-1.5 rounded-lg border border-gray-100 dark:border-gray-800">
-                      <div class="flex items-center space-x-1.5">
-                        <span class="${m.status==='unsolved'?'text-amber-500 font-bold':'text-gray-500'}"><i class="fa-solid fa-circle-dot"></i> Unsolved</span>
-                        ${m.status==='solving' || m.status==='solved' ? `<span class="text-gray-500">•</span>` : ''}
-                        ${m.status==='solving' ? `<span class="text-blue-500 font-bold">Solving</span>` : ''}
-                        ${m.status==='solved' ? `<span class="text-green-500 font-bold">Solved</span>` : ''}
+                      <div class="flex items-center space-x-2">
+                        <!-- Left side circular profiles for those solving -->
+                        <div class="flex items-center cursor-pointer" onclick="showSolvingModal('${key}')" title="Click to view who is solving">
+                          ${solvingArr.length > 0 ? `
+                            <div class="flex items-center mr-1.5">
+                              ${solvingArr.map((u, idx) => `
+                                <div class="w-5 h-5 rounded-full bg-waGreen text-white text-[9px] font-bold flex items-center justify-center border border-white dark:border-waDarkBg shadow-sm ${idx > 0 ? '-ml-2' : ''}" title="${u.name}">${u.initial}</div>
+                              `).join('')}
+                            </div>
+                          ` : ''}
+                          <div class="flex items-center space-x-1.5">
+                            <span class="${m.status==='unsolved'?'text-amber-500 font-bold':'text-gray-500'}"><i class="fa-solid fa-circle-dot"></i> ${m.status === 'unsolved' ? 'Unsolved' : (solvingArr.length > 0 ? `${solvingArr.length} solving` : 'Solving')}</span>
+                            ${m.status==='solved' ? `<span class="text-gray-500">•</span><span class="text-green-500 font-bold">Solved</span>` : ''}
+                          </div>
+                        </div>
                       </div>
                       <div class="flex gap-1 ml-2">
-                        ${m.status === 'unsolved' ? `<button onclick="setSolving('${key}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow transition">Solving</button>`: ''}
+                        ${m.status === 'unsolved' || m.status === 'solving' ? `<button onclick="setSolving('${key}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow transition">Solving</button>`: ''}
                         ${m.status === 'solving' ? `<button onclick="setSolved('${key}')" class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white font-semibold rounded shadow transition">Mark Solved</button>`: ''}
                       </div>
                     </div>
@@ -1134,17 +1258,19 @@
 
     function setSolving(key) {
       if (!state.currentUser) return;
-      db.ref(`rooms/${state.currentRoomId}/messages/${key}`).update({
-        status: 'solving',
-        solvingUser: { name: state.currentUser.nickname, initial: state.currentUser.initial }
+      const userKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
+      db.ref(`rooms/${state.currentRoomId}/messages/${key}/solvingUsers/${userKey}`).set({
+        name: state.currentUser.nickname,
+        fullName: state.currentUser.fullName,
+        initial: state.currentUser.initial
       });
+      db.ref(`rooms/${state.currentRoomId}/messages/${key}/status`).set('solving');
     }
 
     function setSolved(key) {
       if (!state.currentUser) return;
       db.ref(`rooms/${state.currentRoomId}/messages/${key}`).update({
-        status: 'solved',
-        solvingUser: null
+        status: 'solved'
       });
     }
 
