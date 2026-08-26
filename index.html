@@ -42,26 +42,9 @@
     .custom-scrollbar::-webkit-scrollbar { width: 5px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
 
-    /* Chatroom Watermark (Dark & Light Mode) */
+    /* Clean Chat Feed Background */
     #chatFeed {
       position: relative;
-      background-image: url('matrix-logo.jpg');
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-size: 260px auto;
-      background-attachment: local;
-    }
-    
-    /* Light Mode Watermark Adjustment */
-    body:not(.dark) #chatFeed {
-      background-blend-mode: overlay;
-      background-color: rgba(255, 255, 255, 0.94);
-    }
-    
-    /* Dark Mode Watermark Adjustment */
-    body.dark #chatFeed {
-      background-blend-mode: soft-light;
-      background-color: rgba(18, 18, 18, 0.92);
     }
   </style>
 </head>
@@ -79,7 +62,7 @@
       <div class="text-center space-y-2">
         <!-- Logo Representation in Authentication Modal -->
         <div class="mx-auto mb-2">
-            <img src="matrix-logo.jpg" alt="Matrix Logo" class="w-20 h-20 mx-auto object-contain rounded-xl drop-shadow-[0_0_12px_rgba(37,211,102,0.45)]">
+            <img src="matrix-logo.jpg" alt="Matrix Logo" class="w-20 h-20 mx-auto object-cover rounded-full drop-shadow-[0_0_12px_rgba(37,211,102,0.45)]">
         </div>
         <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-wider">MATRIX TEAM</h2>
         <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">KNOWLEDGE | INNOVATION | GROWTH</p>
@@ -143,13 +126,13 @@
   <!-- Top App Header -->
   <header class="bg-waTeal dark:bg-waDarkHeader text-white px-4 py-2.5 flex justify-between items-center shadow-md z-30 shrink-0">
     <div class="flex items-center space-x-3">
-      <button onclick="toggleSidebar()" class="text-xl p-1.5 rounded-full hover:bg-white/10 focus:outline-none" title="Open Menu">
+      <button onclick="backToChatList()" class="text-xl p-1.5 rounded-full hover:bg-white/10 focus:outline-none md:hidden" title="Show Chat Rooms Pane">
         <i class="fa-solid fa-bars"></i>
       </button>
-      <div class="flex items-center space-x-3 cursor-pointer" onclick="toggleSidebar()">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="backToChatList()">
         <!-- Top Navigation Bar Logo -->
         <div class="flex items-center justify-center">
-            <img src="matrix-logo.jpg" alt="Matrix Logo" class="w-10 h-10 object-contain rounded-xl shadow">
+            <img src="matrix-logo.jpg" alt="Matrix Logo" class="w-10 h-10 object-cover rounded-full shadow">
         </div>
         <div>
           <h1 class="font-bold leading-tight text-base">MATRIX TEAM</h1>
@@ -166,11 +149,11 @@
     </div>
   </header>
 
-  <!-- Main Application Area -->
+  <!-- Main Application Workspace: WhatsApp Desktop 2-Pane Display -->
   <div class="flex-1 flex overflow-hidden relative">
 
-    <!-- Left Sidebar Menu (Sliding over on mobile) -->
-    <aside id="sidebar" class="absolute inset-y-0 left-0 w-80 bg-white dark:bg-waDarkPanel border-r border-gray-200 dark:border-gray-700 flex flex-col z-20 transition-transform duration-300 transform -translate-x-full md:relative md:translate-x-0 shrink-0 shadow-xl md:shadow-none">
+    <!-- LEFT PANE: Chatrooms, Members & Settings Navigation Pane -->
+    <aside id="sidebar" class="w-full md:w-80 bg-white dark:bg-waDarkPanel border-r border-gray-200 dark:border-gray-700 flex flex-col shrink-0 shadow-xl md:shadow-none transition-all duration-200 z-20">
       
       <!-- User Mini Profile -->
       <div class="p-4 bg-gray-50 dark:bg-gray-800/40 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 shrink-0">
@@ -185,7 +168,6 @@
         </div>
         <div class="flex space-x-1">
           <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
-          <button onclick="toggleSidebar()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition md:hidden" title="Close"><i class="fa-solid fa-times"></i></button>
         </div>
       </div>
 
@@ -252,13 +234,16 @@
       </div>
     </aside>
 
-    <!-- Main Chat Workspace -->
-    <main id="rightPane" class="flex-1 flex flex-col bg-gray-200 dark:bg-waDarkBg h-full hidden md:flex min-w-0">
+    <!-- RIGHT PANE: Selected Chatroom Conversation Display -->
+    <main id="rightPane" class="flex-1 flex flex-col bg-gray-200 dark:bg-waDarkBg h-full min-w-0 hidden md:flex">
       
       <!-- Room Header -->
       <header class="bg-gray-100 dark:bg-waDarkHeader border-b border-gray-300 dark:border-gray-800 px-4 py-3 flex justify-between items-center shrink-0 shadow-sm">
         <div class="flex items-center space-x-3 overflow-hidden">
-          <button onclick="backToChatList()" class="md:hidden text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 p-1"><i class="fa-solid fa-arrow-left"></i></button>
+          <!-- Small tab back arrow button pointing to left rooms pane -->
+          <button onclick="backToChatList()" class="md:hidden text-waGreen hover:text-waTeal p-1 text-lg font-bold" title="Back to Rooms">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
           <div class="w-10 h-10 rounded-full bg-waGreen text-white flex items-center justify-center text-lg shadow-sm shrink-0" id="activeRoomAvatar"></div>
           <div class="min-w-0">
             <h2 class="font-bold text-sm text-gray-900 dark:text-white truncate" id="activeRoomTitle">Select a Room</h2>
@@ -295,7 +280,7 @@
           <button onclick="clearSelectedAttachment()" class="text-gray-500 hover:text-red-500 p-1.5"><i class="fa-solid fa-times text-lg"></i></button>
         </div>
 
-        <div class="flex items-end space-x-2 max-w-4xl mx-auto">
+        <div class="flex items-end space-x-2 max-w-5xl mx-auto">
           <button onclick="triggerFileUpload()" class="p-3 rounded-full text-gray-500 hover:text-waGreen hover:bg-gray-200 dark:hover:bg-gray-700 transition focus:outline-none" title="Attach Media">
             <i class="fa-solid fa-paperclip text-lg"></i>
           </button>
@@ -640,25 +625,25 @@
       }).join('');
     }
 
+    /* 2-Pane Switch Logic (WhatsApp Responsive Style) */
     function selectRoom(roomId) {
       state.currentRoomId = roomId;
       const room = ALL_CHAT_ROOMS.find(r => r.id === roomId) || ALL_CHAT_ROOMS[0];
 
-      // Update Header
+      // Update Conversation Header
       document.getElementById('activeRoomTitle').innerText = room.name;
       document.getElementById('activeRoomDesc').innerText = room.desc;
       document.getElementById('activeRoomAvatar').innerHTML = `<i class="fa-solid ${room.icon}"></i>`;
 
-      // Mobile responsiveness: Targets "sidebar" instead of "leftPane"
-      if (window.innerWidth < 768) {
-        const sidebarEl = document.getElementById('sidebar');
-        const rightPaneEl = document.getElementById('rightPane');
-        if (sidebarEl) sidebarEl.classList.add('hidden');
-        if (rightPaneEl) {
-          rightPaneEl.classList.remove('hidden');
-          rightPaneEl.classList.add('flex');
-        }
-      }
+      // On small screens, hide left rooms pane and display right conversation pane
+      const sidebarEl = document.getElementById('sidebar');
+      const rightPaneEl = document.getElementById('rightPane');
+      
+      sidebarEl.classList.remove('w-full');
+      sidebarEl.classList.add('hidden', 'md:flex');
+      
+      rightPaneEl.classList.remove('hidden');
+      rightPaneEl.classList.add('flex');
 
       renderChatRoomsList();
       initRoomListener();
@@ -667,11 +652,13 @@
     function backToChatList() {
       const sidebarEl = document.getElementById('sidebar');
       const rightPaneEl = document.getElementById('rightPane');
-      if (rightPaneEl) {
-        rightPaneEl.classList.remove('flex');
-        rightPaneEl.classList.add('hidden');
-      }
-      if (sidebarEl) sidebarEl.classList.remove('hidden');
+
+      // On small screens, show left rooms pane and hide conversation pane
+      sidebarEl.classList.remove('hidden');
+      sidebarEl.classList.add('flex', 'w-full');
+
+      rightPaneEl.classList.remove('flex');
+      rightPaneEl.classList.add('hidden', 'md:flex');
     }
 
     /* ---------------- DATABASE & LISTENERS ---------------- */
@@ -830,8 +817,7 @@
       }
     }
 
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
-    function openSidebarTab(tab) { toggleSidebar(); switchSidebarTab(tab); }
+    function openSidebarTab(tab) { backToChatList(); switchSidebarTab(tab); }
     function switchSidebarTab(tab) {
       ['members', 'topics', 'settings'].forEach(t => {
         document.getElementById(`sideView-${t}`).classList.add('hidden');
@@ -1076,7 +1062,7 @@
       msgEntries.sort((a, b) => (a[1].timestamp || 0) - (b[1].timestamp || 0));
 
       feed.innerHTML = `
-        <div class="max-w-3xl mx-auto w-full space-y-2">
+        <div class="w-full max-w-5xl mx-auto space-y-2.5 px-2 sm:px-6">
           ${msgEntries.map(([key, m]) => {
             const isMe = state.currentUser && m.sender === state.currentUser.nickname;
             const canDelete = isMe || (state.currentUser && state.currentUser.isAdmin);
@@ -1086,7 +1072,7 @@
             if (m.type === 'text') {
               return `
                 <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-                  <div class="max-w-[75%] sm:max-w-xs px-3 py-1.5 rounded-xl text-[12px] ${isMe ? 'bg-waDarkBubble text-white rounded-br-sm' : 'bg-white dark:bg-waDarkIncoming text-gray-800 dark:text-gray-100 rounded-bl-sm shadow-sm'}">
+                  <div class="max-w-[82%] sm:max-w-md md:max-w-lg px-3.5 py-2 rounded-xl text-[12px] ${isMe ? 'bg-waDarkBubble text-white rounded-br-sm' : 'bg-white dark:bg-waDarkIncoming text-gray-800 dark:text-gray-100 rounded-bl-sm shadow-sm'}">
                     <div class="flex items-center justify-between gap-2 mb-0.5">
                       ${!isMe ? `<p class="text-[10px] font-bold text-waGreen flex items-center gap-1 cursor-pointer hover:underline" onclick="showUserProfile('${senderKey}')">${m.sender} ${m.isAdmin ? '<span class="bg-red-600 text-white text-[7px] px-1 rounded">ADMIN</span>' : ''}</p>` : (m.isAdmin ? `<p class="text-[10px] font-bold text-red-300 cursor-pointer hover:underline" onclick="showUserProfile('${senderKey}')">ADMIN</p>`: '')}
                       <div class="flex items-center gap-1.5">
@@ -1105,7 +1091,7 @@
 
               return `
                 <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} my-1">
-                  <div class="max-w-[85%] sm:max-w-sm bg-white dark:bg-waDarkIncoming rounded-xl p-2.5 shadow-sm border border-gray-200 dark:border-gray-700/50 space-y-2 ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}">
+                  <div class="max-w-[88%] sm:max-w-md md:max-w-lg bg-white dark:bg-waDarkIncoming rounded-xl p-2.5 shadow-sm border border-gray-200 dark:border-gray-700/50 space-y-2 ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}">
                     <div class="flex justify-between items-center">
                       <span class="text-[8px] uppercase font-bold px-1.5 py-0.5 rounded bg-waGreen/10 text-waGreen">${m.subject || 'Media'}</span>
                       <div class="flex items-center gap-1.5">
