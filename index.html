@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matrix Team - Portal & Chat Rooms</title>
-  
+  <title>Matrix Team — Collaborative Study Network</title>
+
   <!-- Browser Tab Icon (Favicon) -->
   <link rel="icon" type="image/jpeg" href="matrix-logo.jpg">
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600&family=Roboto:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
   <!-- FIREBASE COMPAT SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -22,38 +22,96 @@
       theme: {
         extend: {
           colors: {
-            waTeal: '#075e54',
-            waGreen: '#128c7e',
-            waLightGreen: '#25d366',
-            waDarkBg: '#0b141a',
-            waDarkPanel: '#111b21',
-            waDarkHeader: '#202c33',
-            waDarkBubble: '#005c4b',
-            waDarkIncoming: '#202c33'
+            waTeal: '#3730A3',
+            waGreen: '#4F46E5',
+            waLightGreen: '#06B6D4',
+            waDarkBg: '#0A0E16',
+            waDarkPanel: '#10141F',
+            waDarkHeader: '#151A27',
+            waDarkBubble: '#4338CA',
+            waDarkIncoming: '#1B2333',
+            signalDanger: '#F43F5E',
+            signalWarn: '#F59E0B',
+            signalOk: '#10B981'
+          },
+          fontFamily: {
+            display: ["'Space Grotesk'", 'sans-serif'],
+            mono: ["'JetBrains Mono'", 'monospace']
+          },
+          keyframes: {
+            fadeSlideUp: { '0%': { opacity: 0, transform: 'translateY(10px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+            popIn: { '0%': { opacity: 0, transform: 'scale(0.85)' }, '100%': { opacity: 1, transform: 'scale(1)' } },
+            dotPulse: { '0%,100%': { opacity: 1 }, '50%': { opacity: 0.25 } },
+            shimmer: { '0%': { backgroundPosition: '-400px 0' }, '100%': { backgroundPosition: '400px 0' } }
+          },
+          animation: {
+            fadeSlideUp: 'fadeSlideUp 0.3s ease-out',
+            popIn: 'popIn 0.18s ease-out',
+            dotPulse: 'dotPulse 1.3s ease-in-out infinite',
+            shimmer: 'shimmer 1.4s infinite linear'
           }
         }
       }
     }
   </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <style>
-    body { font-family: 'Inter', sans-serif; transition: font-family 0.3s ease; }
-    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
 
-    /* Clean Chat Feed Background */
-    #chatFeed {
-      position: relative;
+  <style>
+    body { font-family: 'Inter', sans-serif; transition: background-color 0.25s ease, color 0.25s ease, font-family 0.3s ease; }
+    .font-display { font-family: 'Space Grotesk', sans-serif; }
+    .font-mono-ui { font-family: 'JetBrains Mono', monospace; }
+    ::selection { background: #4F46E5; color: #fff; }
+
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(120,120,140,0.35); border-radius: 999px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(120,120,140,0.55); }
+    :focus-visible { outline: 2px solid #06B6D4; outline-offset: 2px; border-radius: 4px; }
+
+    /* Subtle dotted texture behind the chat feed */
+    #chatFeed { position: relative; background-image: radial-gradient(circle at 1px 1px, rgba(90,90,120,0.07) 1px, transparent 0); background-size: 22px 22px; }
+    .dark #chatFeed { background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.045) 1px, transparent 0); }
+
+    .msg-enter { animation: fadeSlideUp 0.32s ease-out both; }
+
+    .reaction-pill { display:inline-flex; align-items:center; gap:4px; font-size:11px; line-height:1; padding:3px 8px; border-radius:999px; background:rgba(0,0,0,0.06); border:1px solid rgba(0,0,0,0.08); cursor:pointer; transition: transform .15s ease, background .15s ease; }
+    .dark .reaction-pill { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.14); color:#e5e7eb; }
+    .reaction-pill:hover { transform: translateY(-1px); }
+    .reaction-pill-active { background: rgba(79,70,229,0.16); border-color:#4F46E5; color:#4338CA; font-weight:700; }
+    .dark .reaction-pill-active { background: rgba(99,102,241,0.28); border-color:#818CF8; color:#C7D2FE; }
+
+    .typing-dot { width:5px; height:5px; border-radius:999px; background:currentColor; display:inline-block; animation: dotPulse 1.2s infinite ease-in-out; }
+    .typing-dot:nth-child(2){ animation-delay:.2s; } .typing-dot:nth-child(3){ animation-delay:.4s; }
+
+    .skeleton-line { background: linear-gradient(90deg, rgba(120,120,140,0.12) 25%, rgba(120,120,140,0.22) 37%, rgba(120,120,140,0.12) 63%); background-size: 800px 100%; animation: shimmer 1.4s infinite linear; }
+
+    #toastStack { position: fixed; top: 16px; right: 16px; z-index: 80; display:flex; flex-direction:column; gap:8px; max-width: 320px; width: calc(100% - 32px); }
+    @media (min-width:480px){ #toastStack { width: 320px; } }
+    .toast { animation: popIn 0.2s ease-out; box-shadow: 0 10px 28px rgba(0,0,0,0.22); }
+
+    .online-dot { box-shadow: 0 0 0 2px #fff; }
+    .dark .online-dot { box-shadow: 0 0 0 2px #10141F; }
+
+    .subject-swatch { box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06); }
+    .dark .subject-swatch { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+
+    .brand-ring { position: relative; }
+    .brand-ring::after { content:''; position:absolute; inset:-4px; border-radius:999px; border:2px solid #06B6D4; opacity:0.55; animation: pingSlow 2.4s cubic-bezier(0,0,0.2,1) infinite; }
+    @keyframes pingSlow { 0% { transform: scale(0.9); opacity:0.55; } 75%,100% { transform: scale(1.25); opacity:0; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .msg-enter, .toast, .brand-ring::after, .skeleton-line, .typing-dot { animation: none !important; }
     }
   </style>
 </head>
-<body class="bg-gray-200 dark:bg-waDarkBg text-gray-800 dark:text-gray-100 h-screen flex flex-col transition-colors duration-200 overflow-hidden">
+<body class="bg-gray-100 dark:bg-waDarkBg text-gray-800 dark:text-gray-100 h-screen flex flex-col transition-colors duration-200 overflow-hidden">
+
+  <!-- TOAST STACK -->
+  <div id="toastStack"></div>
 
   <!-- GLOBAL LOADING OVERLAY -->
   <div id="globalLoader" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center space-y-3">
     <div class="w-12 h-12 border-4 border-waLightGreen border-t-transparent rounded-full animate-spin"></div>
-    <p id="loaderText" class="text-white font-bold text-sm tracking-wide">Processing...</p>
+    <p id="loaderText" class="text-white font-bold text-sm tracking-wide font-display">Processing...</p>
   </div>
 
   <!-- AUTHENTICATION (LOGIN & REGISTER) MODAL -->
@@ -61,11 +119,11 @@
     <div class="bg-white dark:bg-waDarkPanel border border-gray-200 dark:border-gray-700 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4">
       <div class="text-center space-y-2">
         <!-- Logo Representation in Authentication Modal -->
-        <div class="mx-auto mb-2">
-            <img src="matrix-logo.jpg" alt="Matrix Logo" class="w-20 h-20 mx-auto object-cover rounded-full drop-shadow-[0_0_12px_rgba(37,211,102,0.45)]">
+        <div class="mx-auto mb-2 w-fit brand-ring">
+            <img src="matrix-logo.jpg" alt="Matrix Logo" class="relative w-20 h-20 mx-auto object-cover rounded-full drop-shadow-[0_0_12px_rgba(79,70,229,0.45)]">
         </div>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-wider">MATRIX TEAM</h2>
-        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">KNOWLEDGE | INNOVATION | GROWTH</p>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-wider font-display">MATRIX TEAM</h2>
+        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium font-mono-ui tracking-wide">KNOWLEDGE · INNOVATION · GROWTH</p>
         <p class="text-xs text-gray-400" id="authSubtitle">Access your account portal</p>
       </div>
 
@@ -131,28 +189,28 @@
       </button>
       <div class="flex items-center space-x-3 cursor-pointer" onclick="backToChatList()">
         <!-- Top Navigation Bar Logo -->
-        <div class="flex items-center justify-center">
-            <img src="matrix-logo.jpg" alt="Matrix Logo" class="w-10 h-10 object-cover rounded-full shadow">
+        <div class="flex items-center justify-center brand-ring">
+            <img src="matrix-logo.jpg" alt="Matrix Logo" class="relative w-10 h-10 object-cover rounded-full shadow">
         </div>
         <div>
-          <h1 class="font-bold leading-tight text-base">MATRIX TEAM</h1>
+          <h1 class="font-bold leading-tight text-base font-display tracking-wide">MATRIX TEAM</h1>
           <p class="hidden"><span id="activeCountLabel"></span></p>
         </div>
       </div>
     </div>
     <div class="flex items-center space-x-3">
-      <span id="currentUserBadge" class="text-xs bg-black/20 px-3 py-1 rounded-full font-medium">Guest</span>
+      <span id="currentUserBadge" class="text-xs bg-black/20 px-3 py-1 rounded-full font-medium font-mono-ui">Guest</span>
       <button onclick="logout()" class="p-2 rounded-full hover:bg-white/10 text-sm" title="Log Out"><i class="fa-solid fa-right-from-bracket"></i></button>
       <button onclick="openSidebarTab('settings')" class="p-2 rounded-full hover:bg-white/10 text-lg" title="Settings"><i class="fa-solid fa-gear"></i></button>
     </div>
   </header>
 
-  <!-- Main Application Workspace: WhatsApp Desktop 2-Pane Display -->
+  <!-- Main Application Workspace: 2-Pane Display -->
   <div class="flex-1 flex overflow-hidden relative">
 
     <!-- LEFT PANE: Chatrooms, Members & Settings Navigation Pane -->
     <aside id="sidebar" class="w-full md:w-80 bg-white dark:bg-waDarkPanel border-r border-gray-200 dark:border-gray-700 flex flex-col shrink-0 shadow-xl md:shadow-none transition-all duration-200 z-20">
-      
+
       <!-- User Mini Profile -->
       <div class="p-4 bg-gray-50 dark:bg-gray-800/40 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 shrink-0">
         <div class="flex items-center space-x-3">
@@ -161,7 +219,7 @@
           </div>
           <div>
             <p class="text-sm font-bold text-gray-800 dark:text-gray-100" id="setProfileNick">User</p>
-            <p class="text-[10px] text-gray-500 dark:text-gray-400" id="setProfileCombo">Combo</p>
+            <p class="text-[10px] text-gray-500 dark:text-gray-400 font-mono-ui" id="setProfileCombo">Combo</p>
           </div>
         </div>
         <div class="flex space-x-1">
@@ -177,12 +235,12 @@
       </div>
 
       <div class="flex-1 overflow-y-auto custom-scrollbar relative">
-        
+
         <!-- View: Chat Rooms -->
         <div id="sideView-topics" class="p-2">
           <div class="px-2 py-3 flex justify-between items-center">
             <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Available Rooms</h3>
-            <span id="roomCountBadge" class="bg-waGreen/20 text-waGreen text-[9px] px-2 py-0.5 rounded-full font-bold">0</span>
+            <span id="roomCountBadge" class="bg-waGreen/20 text-waGreen text-[9px] px-2 py-0.5 rounded-full font-bold font-mono-ui">0</span>
           </div>
           <div id="roomsListContainer" class="space-y-1"></div>
         </div>
@@ -197,7 +255,7 @@
 
         <!-- View: User Settings -->
         <div id="sideView-settings" class="hidden p-4 space-y-5">
-          
+
           <!-- Independent Profile Section -->
           <div>
             <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Profile Details</h4>
@@ -207,7 +265,7 @@
               <p><strong>Email:</strong> <span id="setProfileEmail"></span></p>
             </div>
           </div>
-          
+
           <!-- Independent Change Password Section -->
           <div>
             <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Change Password</h4>
@@ -241,15 +299,25 @@
                   <option value="'Roboto', sans-serif">Roboto (Classic)</option>
                 </select>
               </div>
-              <div class="flex gap-2">
-                <button onclick="enableNotifications()" class="flex-1 py-1.5 bg-waGreen/20 text-waGreen hover:bg-waGreen hover:text-white text-[10px] font-bold rounded transition">Turn On Alerts</button>
-                <button onclick="disableNotifications()" class="flex-1 py-1.5 bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white text-[10px] font-bold rounded transition">Mute</button>
+              <div>
+                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase mb-1">Notifications</p>
+                <div class="flex gap-2">
+                  <button onclick="enableNotifications()" class="flex-1 py-1.5 bg-waGreen/20 text-waGreen hover:bg-waGreen hover:text-white text-[10px] font-bold rounded transition">Turn On Alerts</button>
+                  <button onclick="disableNotifications()" class="flex-1 py-1.5 bg-signalDanger/20 text-signalDanger hover:bg-signalDanger hover:text-white text-[10px] font-bold rounded transition">Mute</button>
+                </div>
+              </div>
+              <div>
+                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase mb-1">Message Sound</p>
+                <div class="flex gap-2">
+                  <button onclick="enableSound()" class="flex-1 py-1.5 bg-waLightGreen/20 text-waLightGreen hover:bg-waLightGreen hover:text-white text-[10px] font-bold rounded transition">Sound On</button>
+                  <button onclick="disableSound()" class="flex-1 py-1.5 bg-signalDanger/20 text-signalDanger hover:bg-signalDanger hover:text-white text-[10px] font-bold rounded transition">Sound Off</button>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-            <button onclick="deleteAccount()" class="w-full py-2 bg-red-500 hover:bg-red-600 text-white text-[11px] font-bold rounded-lg transition shadow">Permanently Delete Account</button>
+            <button onclick="deleteAccount()" class="w-full py-2 bg-signalDanger hover:bg-rose-700 text-white text-[11px] font-bold rounded-lg transition shadow">Permanently Delete Account</button>
           </div>
         </div>
 
@@ -257,10 +325,10 @@
     </aside>
 
     <!-- RIGHT PANE: Selected Chatroom Conversation Display -->
-    <main id="rightPane" class="flex-1 flex flex-col bg-gray-200 dark:bg-waDarkBg h-full min-w-0 hidden md:flex">
-      
+    <main id="rightPane" class="flex-1 flex flex-col bg-gray-100 dark:bg-waDarkBg h-full min-w-0 hidden md:flex relative">
+
       <!-- Room Header -->
-      <header class="bg-gray-100 dark:bg-waDarkHeader border-b border-gray-300 dark:border-gray-800 px-4 py-3 flex justify-between items-center shrink-0 shadow-sm">
+      <header class="bg-white dark:bg-waDarkHeader border-b border-gray-200 dark:border-gray-800 px-4 py-3 flex justify-between items-center shrink-0 shadow-sm">
         <div class="flex items-center space-x-3 overflow-hidden">
           <!-- Small tab back arrow button pointing to left rooms pane -->
           <button onclick="backToChatList()" class="md:hidden text-waGreen hover:text-waTeal p-1 text-lg font-bold" title="Back to Rooms">
@@ -268,10 +336,23 @@
           </button>
           <div class="w-10 h-10 rounded-full bg-waGreen text-white flex items-center justify-center text-lg shadow-sm shrink-0" id="activeRoomAvatar"></div>
           <div class="min-w-0">
-            <h2 class="font-bold text-sm text-gray-900 dark:text-white truncate" id="activeRoomTitle">Select a Room</h2>
+            <h2 class="font-bold text-sm text-gray-900 dark:text-white truncate font-display" id="activeRoomTitle">Select a Room</h2>
           </div>
         </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <button onclick="toggleSearchBar()" class="p-2 rounded-full text-gray-500 dark:text-gray-300 hover:text-waGreen hover:bg-gray-100 dark:hover:bg-gray-700 transition" title="Search this room">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
       </header>
+
+      <!-- Search Bar -->
+      <div id="searchBar" class="hidden bg-gray-50 dark:bg-waDarkPanel border-b border-gray-200 dark:border-gray-800 px-4 py-2 items-center gap-2 shrink-0">
+        <i class="fa-solid fa-magnifying-glass text-gray-400 text-xs"></i>
+        <input id="searchInput" type="text" oninput="filterMessages(this.value)" placeholder="Search this room..." class="flex-1 bg-transparent text-xs focus:outline-none text-gray-800 dark:text-gray-100 placeholder-gray-400 py-1">
+        <span id="searchResultCount" class="font-mono-ui text-[10px] text-gray-400 shrink-0"></span>
+        <button onclick="toggleSearchBar()" class="text-gray-400 hover:text-signalDanger text-xs p-1"><i class="fa-solid fa-xmark"></i></button>
+      </div>
 
       <!-- Pinned Message Banner -->
       <div id="pinnedBanner" class="hidden bg-waDarkBubble text-white px-4 py-2 flex items-center justify-between text-xs shadow-md shrink-0 cursor-pointer">
@@ -284,13 +365,31 @@
       </div>
 
       <!-- Messages Feed -->
-      <div id="chatFeed" class="flex-1 overflow-y-auto p-4 custom-scrollbar scroll-smooth"></div>
+      <div id="chatFeed" class="flex-1 overflow-y-auto p-4 custom-scrollbar scroll-smooth">
+        <div class="space-y-3 px-6 pt-4">
+          <div class="skeleton-line h-10 w-2/3 rounded-xl"></div>
+          <div class="skeleton-line h-10 w-1/2 rounded-xl ml-auto"></div>
+          <div class="skeleton-line h-10 w-3/5 rounded-xl"></div>
+        </div>
+      </div>
+
+      <!-- Scroll to bottom floating button -->
+      <button id="scrollBottomBtn" onclick="scrollToBottomManual()" class="hidden absolute bottom-24 right-6 z-20 bg-white dark:bg-waDarkHeader shadow-lg rounded-full w-10 h-10 items-center justify-center text-waGreen border border-gray-200 dark:border-gray-700 hover:scale-105 transition">
+        <i class="fa-solid fa-arrow-down"></i>
+        <span id="scrollUnreadBadge" class="hidden absolute -top-1 -right-1 bg-signalDanger text-white text-[9px] rounded-full px-1.5 py-0.5 font-mono-ui"></span>
+      </button>
+
+      <!-- Typing indicator -->
+      <div id="typingIndicator" class="hidden px-4 py-1.5 text-[11px] text-gray-500 dark:text-gray-400 italic flex items-center gap-2 bg-gray-50 dark:bg-waDarkHeader/70 shrink-0 border-t border-gray-100 dark:border-gray-800">
+        <span id="typingText"></span>
+        <span class="flex gap-0.5"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></span>
+      </div>
 
       <!-- Message Input Area -->
-      <footer class="bg-gray-100 dark:bg-waDarkHeader border-t border-gray-300 dark:border-gray-800 p-3 shrink-0">
-        
+      <footer class="bg-white dark:bg-waDarkHeader border-t border-gray-200 dark:border-gray-800 p-3 shrink-0">
+
         <!-- Attachment Preview Bar -->
-        <div id="attachmentPreviewBar" class="hidden mb-2 p-2 bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-between border border-gray-300 dark:border-gray-700">
+        <div id="attachmentPreviewBar" class="hidden mb-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between border border-gray-300 dark:border-gray-700">
           <div class="flex items-center space-x-3">
             <img id="previewImgThumb" class="h-10 w-10 object-cover rounded shadow-sm border border-gray-400 hidden">
             <div class="text-xs">
@@ -298,19 +397,19 @@
               <span id="attachmentNameLabel" class="text-gray-500 dark:text-gray-400 truncate max-w-[150px] inline-block align-bottom"></span>
             </div>
           </div>
-          <button onclick="clearSelectedAttachment()" class="text-gray-500 hover:text-red-500 p-1.5"><i class="fa-solid fa-times text-lg"></i></button>
+          <button onclick="clearSelectedAttachment()" class="text-gray-500 hover:text-signalDanger p-1.5"><i class="fa-solid fa-times text-lg"></i></button>
         </div>
 
         <div class="flex items-end space-x-2 max-w-5xl mx-auto">
-          <button onclick="triggerFileUpload()" class="p-3 rounded-full text-gray-500 hover:text-waGreen hover:bg-gray-200 dark:hover:bg-gray-700 transition focus:outline-none" title="Attach Media">
+          <button onclick="triggerFileUpload()" class="p-3 rounded-full text-gray-500 hover:text-waGreen hover:bg-gray-100 dark:hover:bg-gray-700 transition focus:outline-none" title="Attach Media">
             <i class="fa-solid fa-paperclip text-lg"></i>
           </button>
           <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleFileSelect(event)">
-          
+
           <div class="flex-1 relative">
-            <textarea id="messageInput" class="w-full bg-white dark:bg-waDarkPanel text-gray-900 dark:text-white rounded-2xl pl-4 pr-10 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-waGreen border border-transparent dark:border-gray-700 shadow-sm resize-none custom-scrollbar" rows="1" placeholder="Type a message or share a problem..." onkeypress="handleKeyPress(event)" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+            <textarea id="messageInput" class="w-full bg-gray-50 dark:bg-waDarkPanel text-gray-900 dark:text-white rounded-2xl pl-4 pr-10 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-waGreen border border-gray-200 dark:border-gray-700 shadow-sm resize-none custom-scrollbar" rows="1" placeholder="Type a message or share a problem..." onkeypress="handleKeyPress(event)" oninput="autoGrowTextarea(this); handleTypingInput();" onblur="clearTypingState()"></textarea>
           </div>
-          
+
           <button onclick="sendMessage()" class="p-3 rounded-full bg-waGreen hover:bg-waLightGreen text-white shadow-md transition-all active:scale-95 focus:outline-none">
             <i class="fa-solid fa-paper-plane text-lg translate-x-[-1px] translate-y-[1px]"></i>
           </button>
@@ -322,15 +421,15 @@
 
   <!-- User Profile Modal (Click on Name) -->
   <div id="profileModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-waDarkPanel rounded-xl shadow-2xl w-full max-w-xs overflow-hidden border border-gray-200 dark:border-gray-700">
+    <div class="bg-white dark:bg-waDarkPanel rounded-xl shadow-2xl w-full max-w-xs overflow-hidden border border-gray-200 dark:border-gray-700 animate-popIn">
       <div class="bg-waTeal p-5 text-center relative">
         <button onclick="closeProfileModal()" class="absolute top-2 right-2 text-white/70 hover:text-white p-1"><i class="fa-solid fa-times text-lg"></i></button>
-        <div class="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center text-3xl font-bold text-waTeal shadow-lg mb-3" id="profileInit">U</div>
-        <h3 class="text-white font-bold text-lg" id="profileNick">Nickname</h3>
+        <div class="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-3xl font-bold shadow-lg mb-3 font-display" id="profileInit">U</div>
+        <h3 class="text-white font-bold text-lg font-display" id="profileNick">Nickname</h3>
       </div>
       <div class="p-5 bg-gray-50 dark:bg-waDarkBg space-y-3">
         <div><p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold">Real Name</p><p class="text-sm text-gray-800 dark:text-gray-100 font-medium" id="profileName">...</p></div>
-        <div><p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold">Subject Combination</p><p class="text-sm text-gray-800 dark:text-gray-100 font-medium" id="profileCombo">...</p></div>
+        <div><p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold">Subject Combination</p><p class="text-sm text-gray-800 dark:text-gray-100 font-medium font-mono-ui" id="profileCombo">...</p></div>
       </div>
       <div class="p-3 border-t border-gray-200 dark:border-gray-700 text-center bg-white dark:bg-waDarkPanel">
         <button onclick="closeProfileModal()" class="px-6 py-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-full transition">Close</button>
@@ -340,10 +439,10 @@
 
   <!-- Solving Members Modal Pane -->
   <div id="solvingModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-waDarkPanel rounded-xl shadow-2xl w-full max-w-xs overflow-hidden border border-gray-200 dark:border-gray-700">
+    <div class="bg-white dark:bg-waDarkPanel rounded-xl shadow-2xl w-full max-w-xs overflow-hidden border border-gray-200 dark:border-gray-700 animate-popIn">
       <div class="bg-waTeal p-4 text-center relative">
         <button onclick="closeSolvingModal()" class="absolute top-2 right-2 text-white/70 hover:text-white p-1"><i class="fa-solid fa-times text-lg"></i></button>
-        <h3 class="text-white font-bold text-sm">Members Solving Question</h3>
+        <h3 class="text-white font-bold text-sm font-display">Members Solving Question</h3>
       </div>
       <div id="solvingModalList" class="p-4 bg-gray-50 dark:bg-waDarkBg space-y-2 max-h-60 overflow-y-auto custom-scrollbar text-xs">
         <!-- Dynamically populated list -->
@@ -356,7 +455,7 @@
 
   <!-- Full Screen Image Modal -->
   <div id="imageModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModal()">
-    <button class="absolute top-4 right-4 text-white hover:text-red-400 text-3xl p-2 focus:outline-none"><i class="fa-solid fa-times"></i></button>
+    <button class="absolute top-4 right-4 text-white hover:text-signalDanger text-3xl p-2 focus:outline-none"><i class="fa-solid fa-times"></i></button>
     <img id="modalImg" class="max-w-full max-h-full object-contain rounded shadow-2xl cursor-zoom-out">
   </div>
 
@@ -390,6 +489,19 @@
       { id: 'geography', name: 'Geography Chatroom', icon: 'fa-earth-africa', subject: 'Geography' }
     ];
 
+    const SUBJECT_COLORS = {
+      General: '#64748B',
+      Physics: '#3B82F6',
+      Chemistry: '#10B981',
+      Mathematics: '#F59E0B',
+      Biology: '#F43F5E',
+      Computer: '#8B5CF6',
+      Economics: '#FB923C',
+      Geography: '#14B8A6'
+    };
+
+    const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '🙏'];
+
     let state = {
       currentUser: null,
       currentRoomId: 'announcements',
@@ -398,14 +510,88 @@
       messages: {},
       selectedFileObject: null,
       unreadCounts: {},
-      roomMessagesCount: {}
+      roomMessagesCount: {},
+      knownMsgKeys: {},
+      roomFirstRenderDone: false,
+      lastFeedCount: 0,
+      forceScrollBottom: true
     };
 
     let notificationsEnabled = localStorage.getItem('matrix_notify') === 'true';
+    let soundEnabled = localStorage.getItem('matrix_sound') !== 'false';
     let currentRoomListener = null;
-    let isInitialSyncDone = false;
-    let lastProcessedTimestamp = 0;
     let globalRoomListeners = {};
+    let lastProcessedTimestampByRoom = {};
+    let initialSyncDoneByRoom = {};
+
+    let typingRef = null, typingCb = null, typingTimeout = null;
+    let unreadScrollCount = 0;
+
+    /* ---------------- SECURITY / UTILITY HELPERS ---------------- */
+    function escapeHtml(str) {
+      if (str === undefined || str === null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function avatarColor(name) {
+      let hash = 0;
+      const str = name || 'U';
+      for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
+      const hue = Math.abs(hash) % 360;
+      return `hsl(${hue}, 60%, 44%)`;
+    }
+
+    function formatDayLabel(ts) {
+      const d = new Date(ts || Date.now());
+      const today = new Date();
+      const yest = new Date(); yest.setDate(today.getDate() - 1);
+      const sameDay = (a, b) => a.toDateString() === b.toDateString();
+      if (sameDay(d, today)) return 'Today';
+      if (sameDay(d, yest)) return 'Yesterday';
+      return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+    }
+
+    /* ---------------- TOASTS (replaces most alert() calls) ---------------- */
+    function toast(message, type) {
+      type = type || 'info';
+      const stack = document.getElementById('toastStack');
+      if (!stack) { alert(message); return; }
+      const colors = { info: 'bg-waGreen', success: 'bg-signalOk', error: 'bg-signalDanger', warn: 'bg-signalWarn' };
+      const icons = { info: 'fa-circle-info', success: 'fa-circle-check', error: 'fa-circle-exclamation', warn: 'fa-triangle-exclamation' };
+      const el = document.createElement('div');
+      el.className = `toast ${colors[type] || colors.info} text-white text-xs font-medium px-4 py-3 rounded-xl flex items-start gap-2`;
+      el.innerHTML = `<i class="fa-solid ${icons[type] || icons.info} mt-0.5"></i><span>${escapeHtml(message)}</span>`;
+      stack.appendChild(el);
+      setTimeout(() => {
+        el.style.transition = 'opacity .3s ease';
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 300);
+      }, 3800);
+    }
+
+    /* ---------------- SOUND ALERTS ---------------- */
+    function playPing() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(880, ctx.currentTime);
+        g.gain.setValueAtTime(0.0001, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + 0.36);
+      } catch (e) { /* audio not available, ignore */ }
+    }
+    function enableSound() { soundEnabled = true; localStorage.setItem('matrix_sound', 'true'); toast('Sound alerts turned on.', 'success'); }
+    function disableSound() { soundEnabled = false; localStorage.setItem('matrix_sound', 'false'); toast('Sound alerts muted.', 'info'); }
 
     /* ---------------- UI CONTROLS ---------------- */
     function showLoader(msg) { document.getElementById('loaderText').innerText = msg; document.getElementById('globalLoader').classList.remove('hidden'); }
@@ -442,7 +628,7 @@
       e.preventDefault();
       const errBox = document.getElementById('authError');
       errBox.classList.add('hidden');
-      
+
       const nickname = document.getElementById('loginNickname').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
 
@@ -456,7 +642,7 @@
         if (!userSnap.exists()) {
           throw new Error("Nickname not found. Please register or check your spelling.");
         }
-        
+
         const userData = userSnap.val();
         const email = userData.email;
 
@@ -597,7 +783,7 @@
             }
 
             document.getElementById('authModal').classList.add('hidden');
-            
+
             const savedFont = localStorage.getItem('matrix_font');
             if (savedFont) {
               document.body.style.fontFamily = savedFont;
@@ -614,6 +800,7 @@
       if (state.currentUser) {
         const myNicknameKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
         db.ref(`members/${myNicknameKey}/status`).set('offline');
+        clearTypingState();
       }
       auth.signOut().then(() => {
         localStorage.removeItem('matrixUser');
@@ -650,15 +837,16 @@
       container.innerHTML = state.userRooms.map(room => {
         const isActive = state.currentRoomId === room.id;
         const unread = state.unreadCounts[room.id] || 0;
-        const badgeHtml = unread > 0 ? `<span class="bg-waLightGreen text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm">${unread}</span>` : '';
+        const color = SUBJECT_COLORS[room.subject] || '#64748B';
+        const badgeHtml = unread > 0 ? `<span class="bg-signalDanger text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm font-mono-ui">${unread}</span>` : '';
 
         return `
-          <div onclick="selectRoom('${room.id}')" class="p-3.5 flex items-center space-x-3 cursor-pointer transition ${isActive ? 'bg-gray-100 dark:bg-waDarkHeader border-l-4 border-waGreen' : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'}">
-            <div class="w-10 h-10 rounded-full bg-waGreen/20 text-waGreen flex items-center justify-center font-bold text-base shrink-0">
+          <div onclick="selectRoom('${room.id}')" class="p-3.5 flex items-center space-x-3 cursor-pointer rounded-xl transition border-l-4 ${isActive ? 'bg-gray-100 dark:bg-waDarkHeader' : 'hover:bg-gray-50 dark:hover:bg-gray-800/40 border-transparent'}" style="${isActive ? `border-color:${color};` : ''}">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-base shrink-0 subject-swatch" style="background:${color}22; color:${color};">
               <i class="fa-solid ${room.icon}"></i>
             </div>
             <div class="flex-1 min-w-0 flex items-center justify-between">
-              <h4 class="font-bold text-xs text-gray-900 dark:text-white truncate">${room.name}</h4>
+              <h4 class="font-bold text-xs text-gray-900 dark:text-white truncate">${escapeHtml(room.name)}</h4>
               ${badgeHtml}
             </div>
           </div>
@@ -666,29 +854,44 @@
       }).join('');
     }
 
-    /* 2-Pane Switch Logic (WhatsApp Responsive Style) */
+    /* 2-Pane Switch Logic (Responsive Style) */
     function selectRoom(roomId) {
       state.currentRoomId = roomId;
       state.unreadCounts[roomId] = 0;
-      
+      state.knownMsgKeys = {};
+      state.roomFirstRenderDone = false;
+      state.lastFeedCount = 0;
+      state.forceScrollBottom = true;
+      unreadScrollCount = 0;
+      updateScrollBadge();
+      const sbb = document.getElementById('scrollBottomBtn');
+      if (sbb) sbb.classList.add('hidden');
+      const sb = document.getElementById('searchBar');
+      if (sb && !sb.classList.contains('hidden')) toggleSearchBar();
+
       const room = ALL_CHAT_ROOMS.find(r => r.id === roomId) || ALL_CHAT_ROOMS[0];
+      const color = SUBJECT_COLORS[room.subject] || '#64748B';
 
       // Update Conversation Header
       document.getElementById('activeRoomTitle').innerText = room.name;
-      document.getElementById('activeRoomAvatar').innerHTML = `<i class="fa-solid ${room.icon}"></i>`;
+      const avatarEl = document.getElementById('activeRoomAvatar');
+      avatarEl.innerHTML = `<i class="fa-solid ${room.icon}"></i>`;
+      avatarEl.style.background = color;
+      avatarEl.style.color = '#fff';
 
       // On small screens, hide left rooms pane and display right conversation pane
       const sidebarEl = document.getElementById('sidebar');
       const rightPaneEl = document.getElementById('rightPane');
-      
+
       sidebarEl.classList.remove('w-full');
       sidebarEl.classList.add('hidden', 'md:flex');
-      
+
       rightPaneEl.classList.remove('hidden');
       rightPaneEl.classList.add('flex');
 
       renderChatRoomsList();
       initRoomListener();
+      attachTypingListener();
     }
 
     function backToChatList() {
@@ -723,7 +926,7 @@
                }
              }
              if (document.getElementById('roomsListContainer')) {
-               renderChatRoomsList(); 
+               renderChatRoomsList();
              }
           });
         }
@@ -735,7 +938,8 @@
         db.ref(`rooms/${state.currentRoomId}/messages`).off('value', currentRoomListener);
       }
 
-      currentRoomListener = db.ref(`rooms/${state.currentRoomId}/messages`).on('value', (snapshot) => {
+      const roomIdAtAttach = state.currentRoomId;
+      currentRoomListener = db.ref(`rooms/${roomIdAtAttach}/messages`).on('value', (snapshot) => {
         state.messages = snapshot.val() || {};
         renderChatFeed();
         checkPinnedBanner();
@@ -745,19 +949,52 @@
           const latestMsg = msgEntries[msgEntries.length - 1][1];
           const latestTimestamp = latestMsg.timestamp || 0;
 
-          if (!isInitialSyncDone) {
-            lastProcessedTimestamp = latestTimestamp;
-            isInitialSyncDone = true;
-          } else if (latestTimestamp > lastProcessedTimestamp) {
-            if (notificationsEnabled && latestMsg && latestMsg.sender !== state.currentUser?.nickname) {
-              if (Notification.permission === "granted") {
-                new Notification(`Matrix Team (${state.currentRoomId}): ${latestMsg.sender}`, { body: latestMsg.text || "Sent a photo" });
+          if (!initialSyncDoneByRoom[roomIdAtAttach]) {
+            lastProcessedTimestampByRoom[roomIdAtAttach] = latestTimestamp;
+            initialSyncDoneByRoom[roomIdAtAttach] = true;
+          } else if (latestTimestamp > (lastProcessedTimestampByRoom[roomIdAtAttach] || 0)) {
+            if (latestMsg && latestMsg.sender !== state.currentUser?.nickname) {
+              playPing();
+              if (notificationsEnabled && Notification.permission === "granted") {
+                new Notification(`Matrix Team (${roomIdAtAttach}): ${latestMsg.sender}`, { body: latestMsg.text || "Sent a photo" });
               }
             }
-            lastProcessedTimestamp = latestTimestamp;
+            lastProcessedTimestampByRoom[roomIdAtAttach] = latestTimestamp;
           }
         }
       });
+    }
+
+    function attachTypingListener() {
+      if (typingRef && typingCb) { typingRef.off('value', typingCb); }
+      typingRef = db.ref(`rooms/${state.currentRoomId}/typing`);
+      typingCb = typingRef.on('value', snap => {
+        const data = snap.val() || {};
+        const myNickKey = state.currentUser ? state.currentUser.nickname.replace(/[.#$[\]]/g, "_") : null;
+        const now = Date.now();
+        const others = Object.entries(data).filter(([k, v]) => k !== myNickKey && v && (now - (v.ts || 0)) < 4000);
+        const el = document.getElementById('typingIndicator');
+        const txt = document.getElementById('typingText');
+        if (!el || !txt) return;
+        if (others.length === 0) { el.classList.add('hidden'); return; }
+        const names = others.map(([k, v]) => v.name);
+        txt.innerText = names.length === 1 ? `${names[0]} is typing` : `${names.slice(0, 2).join(', ')} are typing`;
+        el.classList.remove('hidden');
+      });
+    }
+
+    function handleTypingInput() {
+      if (!state.currentUser || !state.currentRoomId) return;
+      const nickKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
+      db.ref(`rooms/${state.currentRoomId}/typing/${nickKey}`).set({ name: state.currentUser.nickname, ts: firebase.database.ServerValue.TIMESTAMP });
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => clearTypingState(), 2500);
+    }
+
+    function clearTypingState() {
+      if (!state.currentUser || !state.currentRoomId) return;
+      const nickKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
+      db.ref(`rooms/${state.currentRoomId}/typing/${nickKey}`).remove();
     }
 
     function initDatabaseListeners() {
@@ -776,7 +1013,7 @@
         });
 
         db.ref(`members/${myNicknameKey}`).on('value', (snapshot) => {
-          if (isInitialSyncDone && !snapshot.exists() && state.currentUser) {
+          if (initialSyncDoneByRoom[state.currentRoomId] && !snapshot.exists() && state.currentUser) {
             alert("You have been terminated from the group please contact the admin mastermatrix872@gmail.com to join");
             localStorage.removeItem('matrixUser');
             auth.signOut();
@@ -798,23 +1035,23 @@
 
     /* ---------------- SETTINGS & HELPERS ---------------- */
     function populateProfileSettings() {
-      if(state.currentUser) {
+      if (state.currentUser) {
         document.getElementById('setProfileName').innerText = state.currentUser.fullName;
         document.getElementById('setProfileNick').innerText = state.currentUser.nickname;
         document.getElementById('setProfileCombo').innerText = state.currentUser.combo;
-        
+
         const emailToUse = state.currentUser.email || auth.currentUser?.email || 'N/A';
         const profileNick2 = document.getElementById('setProfileNick2');
-        if(profileNick2) profileNick2.innerText = state.currentUser.nickname;
-        
+        if (profileNick2) profileNick2.innerText = state.currentUser.nickname;
+
         const profileEmail = document.getElementById('setProfileEmail');
-        if(profileEmail) profileEmail.innerText = emailToUse;
-        
+        if (profileEmail) profileEmail.innerText = emailToUse;
+
         const fsNick = document.getElementById('formspreeNick');
-        if(fsNick) fsNick.value = state.currentUser.nickname;
-        
+        if (fsNick) fsNick.value = state.currentUser.nickname;
+
         const fsEmail = document.getElementById('formspreeEmail');
-        if(fsEmail) fsEmail.value = emailToUse;
+        if (fsEmail) fsEmail.value = emailToUse;
       }
     }
 
@@ -842,16 +1079,17 @@
           successMsg.classList.remove('hidden');
           submitBtn.textContent = 'Send Recommendation';
           submitBtn.disabled = false;
+          toast('Recommendation sent to the admin.', 'success');
           setTimeout(() => {
             successMsg.classList.add('hidden');
           }, 4000);
         } else {
-          alert('Failed to send recommendation. Please try again.');
+          toast('Failed to send recommendation. Please try again.', 'error');
           submitBtn.disabled = false;
           submitBtn.textContent = 'Send Recommendation';
         }
       } catch (error) {
-        alert('An error occurred. Please try again.');
+        toast('An error occurred. Please try again.', 'error');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Send Recommendation';
       }
@@ -861,11 +1099,11 @@
       const passInput = document.getElementById('newPasswordInput');
       const newPass = passInput.value.trim();
       if (!newPass) {
-        alert("Please enter a new password.");
+        toast("Please enter a new password.", 'warn');
         return;
       }
       if (newPass.length < 6) {
-        alert("Password must be at least 6 characters long.");
+        toast("Password must be at least 6 characters long.", 'warn');
         return;
       }
       const user = auth.currentUser;
@@ -873,11 +1111,11 @@
         showLoader("Updating Password...");
         user.updatePassword(newPass).then(() => {
           hideLoader();
-          alert("Password successfully updated!");
+          toast("Password successfully updated!", 'success');
           passInput.value = '';
         }).catch((error) => {
           hideLoader();
-          alert("Error updating password: " + error.message + ". Please log out and back in first to verify your session.");
+          toast("Error updating password: " + error.message + ". Please log out and back in first to verify your session.", 'error');
         });
       }
     }
@@ -890,13 +1128,13 @@
 
     function enableNotifications() {
       if (!("Notification" in window)) {
-        alert("Notifications not supported.");
+        toast("Notifications aren't supported in this browser.", 'error');
       } else {
         Notification.requestPermission().then((permission) => {
           if (permission === "granted") {
             notificationsEnabled = true;
             localStorage.setItem('matrix_notify', 'true');
-            alert("Notifications enabled!");
+            toast("Notifications enabled!", 'success');
           }
         });
       }
@@ -905,7 +1143,7 @@
     function disableNotifications() {
       notificationsEnabled = false;
       localStorage.setItem('matrix_notify', 'false');
-      alert("Notifications stopped.");
+      toast("Notifications stopped.", 'info');
     }
 
     function deleteAccount() {
@@ -935,10 +1173,10 @@
         await db.ref(`bannedEmails/${safeEmailKey}`).set(true);
         await db.ref(`members/${nickKey}`).remove();
         hideLoader();
-        alert(`${memberNickname} terminated.`);
+        toast(`${memberNickname} terminated.`, 'success');
       } catch (error) {
         hideLoader();
-        alert("Error: " + error.message);
+        toast("Error: " + error.message, 'error');
       }
     }
 
@@ -947,11 +1185,11 @@
       ['members', 'topics', 'settings'].forEach(t => {
         document.getElementById(`sideView-${t}`).classList.add('hidden');
         const btn = document.getElementById(`tabBtn-${t}`);
-        if(btn) { btn.classList.remove('border-waGreen', 'text-waGreen', 'font-bold'); btn.classList.add('border-transparent'); }
+        if (btn) { btn.classList.remove('border-waGreen', 'text-waGreen', 'font-bold'); btn.classList.add('border-transparent'); }
       });
       document.getElementById(`sideView-${tab}`).classList.remove('hidden');
       const activeBtn = document.getElementById(`tabBtn-${tab}`);
-      if(activeBtn) { activeBtn.classList.add('border-waGreen', 'text-waGreen', 'font-bold'); activeBtn.classList.remove('border-transparent'); }
+      if (activeBtn) { activeBtn.classList.add('border-waGreen', 'text-waGreen', 'font-bold'); activeBtn.classList.remove('border-transparent'); }
     }
     function toggleTheme() { document.documentElement.classList.toggle('dark'); }
 
@@ -959,26 +1197,34 @@
       const list = document.getElementById('activeMembersList');
       const membersEntries = Object.entries(state.members);
 
-      if(membersEntries.length === 0) return;
+      if (membersEntries.length === 0) {
+        list.innerHTML = `<p class="text-[11px] text-gray-400 text-center py-4">No members yet.</p>`;
+        return;
+      }
       const isAdminUser = state.currentUser && state.currentUser.isAdmin;
 
       list.innerHTML = membersEntries.map(([nickKey, m]) => {
         const isMe = state.currentUser && m.nickname === state.currentUser.nickname;
+        const isOnline = m.status === 'online';
+        const color = avatarColor(m.nickname);
         return `
-          <div class="flex items-center justify-between p-2 rounded bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between p-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700">
             <div class="flex items-center space-x-2 overflow-hidden">
-              <div class="w-7 h-7 shrink-0 rounded-full bg-waGreen text-white flex items-center justify-center font-bold text-xs">${m.initial || 'U'}</div>
+              <div class="relative shrink-0">
+                <div class="w-7 h-7 rounded-full text-white flex items-center justify-center font-bold text-xs" style="background:${color};">${escapeHtml(m.initial || 'U')}</div>
+                <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full online-dot ${isOnline ? 'bg-signalOk' : 'bg-gray-400'}"></span>
+              </div>
               <div class="truncate">
                 <p class="font-semibold text-gray-800 dark:text-gray-100 text-[11px] truncate cursor-pointer hover:underline" onclick="showUserProfile('${nickKey}')">
-                  ${m.nickname} <span class="text-[9px] text-waGreen font-bold">(${m.combo})</span>
-                  ${m.isAdmin ? '<span class="ml-1 px-1 py-0.2 bg-red-600 text-white text-[8px] font-bold rounded">ADMIN</span>' : ''}
+                  ${escapeHtml(m.nickname)} <span class="text-[9px] font-bold font-mono-ui" style="color:${color};">(${escapeHtml(m.combo)})</span>
+                  ${m.isAdmin ? '<span class="ml-1 px-1 py-0.2 bg-signalDanger text-white text-[8px] font-bold rounded">ADMIN</span>' : ''}
                 </p>
-                <p class="text-[9px] text-gray-400 truncate">${m.fullName}</p>
+                <p class="text-[9px] text-gray-400 truncate">${escapeHtml(m.fullName)}</p>
               </div>
             </div>
             <div class="flex items-center space-x-2 shrink-0">
               ${isAdminUser && !isMe ? `
-                <button onclick="terminateMember('${nickKey}', '${m.email}', '${m.nickname}')" class="px-2 py-0.5 bg-red-600 hover:bg-red-700 text-white text-[9px] font-bold rounded shadow transition">Terminate</button>
+                <button onclick="terminateMember('${nickKey}', '${m.email}', '${m.nickname}')" class="px-2 py-0.5 bg-signalDanger hover:bg-rose-700 text-white text-[9px] font-bold rounded shadow transition">Terminate</button>
               ` : ''}
             </div>
           </div>
@@ -988,24 +1234,26 @@
 
     /* ---------------- MESSAGING & UPLOADS ---------------- */
     function triggerFileUpload() { document.getElementById('fileInput').click(); }
-    
+
+    function processSelectedFile(file) {
+      if (!file || !file.type || !file.type.startsWith('image/')) {
+        toast("Please select an image file.", 'warn');
+        return;
+      }
+      state.selectedFileObject = file;
+      document.getElementById('attachmentNameLabel').innerText = file.name || 'pasted-image.png';
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        document.getElementById('previewImgThumb').src = e.target.result;
+        document.getElementById('previewImgThumb').classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+      document.getElementById('attachmentPreviewBar').classList.remove('hidden');
+    }
+
     function handleFileSelect(event) {
       const file = event.target.files[0];
-      if (file) {
-        if (!file.type.startsWith('image/')) {
-          alert("Please select an image file.");
-          return;
-        }
-        state.selectedFileObject = file;
-        document.getElementById('attachmentNameLabel').innerText = file.name;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('previewImgThumb').src = e.target.result;
-          document.getElementById('previewImgThumb').classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
-        document.getElementById('attachmentPreviewBar').classList.remove('hidden');
-      }
+      if (file) processSelectedFile(file);
     }
 
     function clearSelectedAttachment() {
@@ -1014,7 +1262,9 @@
       document.getElementById('attachmentPreviewBar').classList.add('hidden');
     }
 
-    function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+    function handleKeyPress(e) { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } }
+
+    function autoGrowTextarea(el) { el.style.height = ''; el.style.height = el.scrollHeight + 'px'; }
 
     function compressImage(file, maxWidth = 800, quality = 0.7) {
       return new Promise((resolve) => {
@@ -1046,6 +1296,8 @@
       const text = input.value.trim();
 
       if (!text && !state.selectedFileObject) return;
+      clearTimeout(typingTimeout);
+      clearTypingState();
 
       const now = new Date();
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -1078,9 +1330,10 @@
           hideLoader();
           clearSelectedAttachment();
           input.value = '';
+          autoGrowTextarea(input);
         } catch (err) {
           hideLoader();
-          alert("Error: " + err.message);
+          toast("Error: " + err.message, 'error');
         }
       } else {
         const newMessage = {
@@ -1098,6 +1351,7 @@
 
         roomMessagesRef.push(newMessage);
         input.value = '';
+        autoGrowTextarea(input);
       }
     }
 
@@ -1155,7 +1409,7 @@
         bannerText.innerText = `${activePinned.sender}: ${activePinned.text || 'Image'}`;
         banner.classList.remove('hidden');
         banner.onclick = (e) => {
-          if(e.target.closest('button')) return;
+          if (e.target.closest('button')) return;
           const msgEl = document.getElementById('msg-' + activePinnedKey);
           if (msgEl) {
              msgEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1173,7 +1427,10 @@
       if (!nickKey) return;
       const user = state.members[nickKey];
       if (user) {
-        document.getElementById('profileInit').innerText = user.initial || 'U';
+        const initEl = document.getElementById('profileInit');
+        initEl.innerText = user.initial || 'U';
+        initEl.style.background = avatarColor(user.nickname);
+        initEl.style.color = '#fff';
         document.getElementById('profileNick').innerText = user.nickname;
         document.getElementById('profileName').innerText = user.fullName;
         document.getElementById('profileCombo').innerText = user.combo;
@@ -1188,17 +1445,17 @@
       if (!msg || !msg.solvingUsers) return;
       const users = Object.values(msg.solvingUsers);
       const listContainer = document.getElementById('solvingModalList');
-      
+
       if (users.length === 0) {
         listContainer.innerHTML = `<p class="text-gray-400 text-center">No one is currently solving this.</p>`;
       } else {
         listContainer.innerHTML = users.map(u => `
-          <div class="flex items-center justify-between p-2 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <div class="flex items-center space-x-2">
-              <div class="w-7 h-7 rounded-full bg-waGreen text-white font-bold text-xs flex items-center justify-center">${u.initial}</div>
+              <div class="w-7 h-7 rounded-full text-white font-bold text-xs flex items-center justify-center" style="background:${avatarColor(u.name)};">${escapeHtml(u.initial)}</div>
               <div>
-                <p class="font-bold text-gray-800 dark:text-gray-100">${u.name}</p>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400">${u.fullName || ''}</p>
+                <p class="font-bold text-gray-800 dark:text-gray-100">${escapeHtml(u.name)}</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400">${escapeHtml(u.fullName || '')}</p>
               </div>
             </div>
           </div>
@@ -1208,99 +1465,6 @@
     }
 
     function closeSolvingModal() { document.getElementById('solvingModal').classList.add('hidden'); }
-
-    function renderChatFeed() {
-      const feed = document.getElementById('chatFeed');
-      const msgEntries = Object.entries(state.messages);
-      const now = Date.now();
-
-      if(msgEntries.length === 0) {
-        feed.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center p-6 text-gray-400 space-y-2"><i class="fa-regular fa-comments text-3xl mb-1"></i><p class="text-xs font-semibold">No messages in this room yet. Start the conversation!</p></div>`;
-        return;
-      }
-
-      msgEntries.sort((a, b) => (a[1].timestamp || 0) - (b[1].timestamp || 0));
-
-      feed.innerHTML = `
-        <div class="w-full mx-auto space-y-2.5 px-6 sm:px-12 md:px-24 lg:px-32">
-          ${msgEntries.map(([key, m]) => {
-            const isMe = state.currentUser && m.sender === state.currentUser.nickname;
-            const canDelete = state.currentUser && state.currentUser.isAdmin;
-            const isPinned = m.pinned && (now - (m.pinnedAt || 0) < 86400000);
-            const senderKey = m.senderKey || (m.sender ? m.sender.replace(/[.#$[\]]/g, "_") : '');
-
-            if (m.type === 'text') {
-              return `
-                <div id="msg-${key}" class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-                  <div class="max-w-[82%] sm:max-w-md md:max-w-lg px-3.5 py-2 rounded-xl text-[12px] bg-waGreen text-white ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm shadow-sm'}">
-                    <div class="flex items-center justify-between gap-2 mb-0.5">
-                      ${!isMe ? `<p class="text-[10px] font-bold text-gray-200 flex items-center gap-1 cursor-pointer hover:underline" onclick="showUserProfile('${senderKey}')">${m.sender} ${m.isAdmin ? '<span class="bg-red-600 text-white text-[7px] px-1 rounded">ADMIN</span>' : ''}</p>` : (m.isAdmin ? `<p class="text-[10px] font-bold text-red-300 cursor-pointer hover:underline" onclick="showUserProfile('${senderKey}')">ADMIN</p>`: '')}
-                      <div class="flex items-center gap-1.5">
-                        <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-300 hover:text-white'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
-                        ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-300 hover:text-red-400 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
-                      </div>
-                    </div>
-                    <p class="leading-relaxed break-words">${m.text}</p>
-                    <p class="text-[8px] text-right opacity-60 mt-0.5">${m.time}</p>
-                  </div>
-                </div>
-              `;
-            } else if (m.type === 'problem') {
-              const solvingUsersObj = m.solvingUsers || {};
-              const solvingArr = Object.values(solvingUsersObj);
-
-              return `
-                <div id="msg-${key}" class="flex flex-col ${isMe ? 'items-end' : 'items-start'} my-1">
-                  <div class="max-w-[88%] sm:max-w-md md:max-w-lg bg-waGreen text-white rounded-xl p-2.5 shadow-sm border border-gray-200 dark:border-gray-700/50 space-y-2 ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}">
-                    <div class="flex justify-between items-center">
-                      <span class="text-[8px] uppercase font-bold px-1.5 py-0.5 rounded bg-white/20 text-white">${m.subject || 'Media'}</span>
-                      <div class="flex items-center gap-1.5">
-                        <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-300 hover:text-white'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
-                        ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-300 hover:text-red-500 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
-                      </div>
-                    </div>
-
-                    <p class="text-[12px] text-white font-medium leading-snug">${m.text}</p>
-
-                    ${m.imageUrl ? `
-                      <div class="w-full max-h-48 overflow-hidden rounded-lg bg-black/30 cursor-pointer" onclick="openModal('${m.imageUrl}')">
-                        <img src="${m.imageUrl}" class="w-full h-48 object-cover hover:scale-105 transition duration-200">
-                      </div>
-                    ` : ''}
-
-                    <div class="flex items-center justify-between text-[9px] bg-white/10 p-1.5 rounded-lg border border-white/20">
-                      <div class="flex items-center space-x-2">
-                        <!-- Left side circular profiles for those solving -->
-                        <div class="flex items-center cursor-pointer" onclick="showSolvingModal('${key}')" title="Click to view who is solving">
-                          ${solvingArr.length > 0 ? `
-                            <div class="flex items-center mr-1.5">
-                              ${solvingArr.map((u, idx) => `
-                                <div class="w-5 h-5 rounded-full bg-waGreen text-white text-[9px] font-bold flex items-center justify-center border border-white dark:border-waDarkBg shadow-sm ${idx > 0 ? '-ml-2' : ''}" title="${u.name}">${u.initial}</div>
-                              `).join('')}
-                            </div>
-                          ` : ''}
-                          <div class="flex items-center space-x-1.5 text-white">
-                            <span class="${m.status==='unsolved'?'text-amber-300 font-bold':'text-gray-200'}"><i class="fa-solid fa-circle-dot"></i> ${m.status === 'unsolved' ? 'Unsolved' : (solvingArr.length > 0 ? `${solvingArr.length} solving` : 'Solving')}</span>
-                            ${m.status==='solved' ? `<span class="text-gray-200">•</span><span class="text-green-300 font-bold">Solved</span>` : ''}
-                          </div>
-                        </div>
-                      </div>
-                      <div class="flex gap-1 ml-2">
-                        ${m.status === 'unsolved' || m.status === 'solving' ? `<button onclick="setSolving('${key}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow transition">Solving</button>`: ''}
-                        ${m.status === 'solving' ? `<button onclick="setSolved('${key}')" class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white font-semibold rounded shadow transition">Mark Solved</button>`: ''}
-                      </div>
-                    </div>
-                    <p class="text-[8px] text-right opacity-60">${m.time}</p>
-                  </div>
-                </div>
-              `;
-            }
-          }).join('')}
-        </div>
-      `;
-
-      feed.scrollTop = feed.scrollHeight;
-    }
 
     function setSolving(key) {
       if (!state.currentUser) return;
@@ -1322,6 +1486,313 @@
 
     function openModal(src) { document.getElementById('modalImg').src = src; document.getElementById('imageModal').classList.remove('hidden'); }
     function closeModal() { document.getElementById('imageModal').classList.add('hidden'); }
+
+    /* ---------------- REACTIONS ---------------- */
+    function toggleReaction(key, emoji) {
+      if (!state.currentUser) return;
+      const nickKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
+      const ref = db.ref(`rooms/${state.currentRoomId}/messages/${key}/reactions/${emoji}/${nickKey}`);
+      ref.once('value').then(snap => {
+        if (snap.exists()) ref.remove(); else ref.set(true);
+      });
+    }
+
+    function toggleReactPicker(key) {
+      const el = document.getElementById(`reactPicker-${key}`);
+      if (!el) return;
+      document.querySelectorAll('[id^="reactPicker-"]').forEach(e => { if (e !== el) e.style.display = 'none'; });
+      el.style.display = (el.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    function renderReactionPills(key, reactions, myNickKey) {
+      if (!reactions) return '';
+      const entries = Object.entries(reactions).filter(([e, u]) => u && Object.keys(u).length > 0);
+      if (entries.length === 0) return '';
+      return `<div class="flex flex-wrap gap-1 mt-1.5">${entries.map(([emoji, users]) => {
+        const count = Object.keys(users).length;
+        const mine = myNickKey && users[myNickKey];
+        return `<button onclick="toggleReaction('${key}','${emoji}')" class="reaction-pill ${mine ? 'reaction-pill-active' : ''}">${emoji}<span>${count}</span></button>`;
+      }).join('')}</div>`;
+    }
+
+    function renderReactPicker(key) {
+      return `<div id="reactPicker-${key}" class="gap-1 mt-1.5 bg-black/10 dark:bg-white/10 p-1 rounded-full w-fit" style="display:none;">${REACTION_EMOJIS.map(e =>
+        `<button onclick="toggleReaction('${key}','${e}');toggleReactPicker('${key}')" class="hover:scale-125 transition text-sm px-1">${e}</button>`
+      ).join('')}</div>`;
+    }
+
+    /* ---------------- SCROLL / UNREAD HELPERS ---------------- */
+    function isNearBottom() {
+      const feed = document.getElementById('chatFeed');
+      if (!feed) return true;
+      return feed.scrollHeight - feed.scrollTop - feed.clientHeight < 150;
+    }
+
+    function updateScrollBadge() {
+      const badge = document.getElementById('scrollUnreadBadge');
+      if (!badge) return;
+      if (unreadScrollCount > 0) { badge.innerText = unreadScrollCount; badge.classList.remove('hidden'); }
+      else { badge.classList.add('hidden'); }
+    }
+
+    function handleFeedScroll() {
+      const btn = document.getElementById('scrollBottomBtn');
+      if (!btn) return;
+      if (isNearBottom()) {
+        btn.classList.add('hidden');
+        unreadScrollCount = 0;
+        updateScrollBadge();
+      } else {
+        btn.classList.remove('hidden');
+      }
+    }
+
+    function scrollToBottomManual() {
+      const feed = document.getElementById('chatFeed');
+      feed.scrollTo({ top: feed.scrollHeight, behavior: 'smooth' });
+      unreadScrollCount = 0;
+      updateScrollBadge();
+      document.getElementById('scrollBottomBtn').classList.add('hidden');
+    }
+
+    /* ---------------- SEARCH ---------------- */
+    function toggleSearchBar() {
+      const bar = document.getElementById('searchBar');
+      if (!bar) return;
+      const willShow = bar.classList.contains('hidden');
+      bar.classList.toggle('hidden');
+      bar.classList.toggle('flex', willShow);
+      if (willShow) {
+        document.getElementById('searchInput').focus();
+      } else {
+        document.getElementById('searchInput').value = '';
+        filterMessages('');
+      }
+    }
+
+    function filterMessages(q) {
+      q = (q || '').toLowerCase();
+      const items = document.querySelectorAll('[data-search-text]');
+      let count = 0;
+      items.forEach(el => {
+        const match = !q || (el.getAttribute('data-search-text') || '').includes(q);
+        el.style.display = match ? '' : 'none';
+        if (match && q) count++;
+      });
+      const label = document.getElementById('searchResultCount');
+      if (label) label.innerText = q ? `${count} match${count !== 1 ? 'es' : ''}` : '';
+    }
+
+    /* ---------------- CHAT FEED RENDERING ---------------- */
+    function renderTextMessage(key, m, isMe, canDelete, isPinned, senderKey, enterClass, myNickKey) {
+      const avColor = avatarColor(m.sender);
+      const bubbleBase = isMe
+        ? 'bg-gradient-to-br from-waGreen to-indigo-500 text-white rounded-br-sm'
+        : 'bg-white dark:bg-waDarkIncoming text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700/60 rounded-bl-sm shadow-sm';
+      const iconColor = isMe ? 'text-white/70 hover:text-white' : 'text-gray-400 hover:text-waGreen dark:hover:text-waLightGreen';
+      const searchText = escapeHtml(((m.sender || '') + ' ' + (m.text || '')).toLowerCase());
+
+      return `
+        <div id="msg-${key}" class="flex ${isMe ? 'justify-end' : 'justify-start'} items-end gap-2 ${enterClass}" data-search-text="${searchText}">
+          ${!isMe ? `<div onclick="showUserProfile('${senderKey}')" class="w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-white text-[10px] font-bold cursor-pointer mb-1" style="background:${avColor};">${escapeHtml((m.senderInitial || m.sender || 'U').charAt(0).toUpperCase())}</div>` : ''}
+          <div class="max-w-[78%] sm:max-w-md md:max-w-lg px-3.5 py-2 rounded-xl text-[12.5px] ${bubbleBase}">
+            <div class="flex items-center justify-between gap-3 mb-0.5">
+              ${!isMe ? `<p class="text-[10px] font-bold flex items-center gap-1 cursor-pointer hover:underline" style="color:${avColor}" onclick="showUserProfile('${senderKey}')">${escapeHtml(m.sender)} ${m.isAdmin ? '<span class="bg-signalDanger text-white text-[7px] px-1 rounded">ADMIN</span>' : ''}</p>` : (m.isAdmin ? `<p class="text-[10px] font-bold text-rose-200">ADMIN</p>` : '<span></span>')}
+              <div class="flex items-center gap-2 shrink-0">
+                <button onclick="toggleReactPicker('${key}')" class="${iconColor} text-[10px]" title="React"><i class="fa-regular fa-face-smile"></i></button>
+                <button onclick="togglePinMessage('${key}')" class="${isPinned ? (isMe ? 'text-cyan-200' : 'text-waLightGreen') : iconColor} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
+                ${canDelete ? `<button onclick="deleteMessage('${key}')" class="${iconColor} hover:!text-signalDanger text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
+              </div>
+            </div>
+            <p class="leading-relaxed break-words whitespace-pre-wrap">${escapeHtml(m.text)}</p>
+            ${renderReactionPills(key, m.reactions, myNickKey)}
+            ${renderReactPicker(key)}
+            <p class="font-mono-ui text-[8px] text-right opacity-60 mt-1">${escapeHtml(m.time)}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProblemMessage(key, m, isMe, canDelete, isPinned, senderKey, enterClass, myNickKey) {
+      const solvingArr = Object.values(m.solvingUsers || {});
+      const avColor = avatarColor(m.sender);
+      const bubbleBase = isMe
+        ? 'bg-gradient-to-br from-waGreen to-indigo-500 text-white rounded-br-sm'
+        : 'bg-white dark:bg-waDarkIncoming text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700/60 rounded-bl-sm shadow-sm';
+      const iconColor = isMe ? 'text-white/70 hover:text-white' : 'text-gray-400 hover:text-waGreen dark:hover:text-waLightGreen';
+      const roomDef = ALL_CHAT_ROOMS.find(r => r.id === m.subject);
+      const subjectColor = SUBJECT_COLORS[roomDef ? roomDef.subject : 'General'] || '#64748B';
+      const searchText = escapeHtml(((m.sender || '') + ' ' + (m.text || '')).toLowerCase());
+
+      return `
+        <div id="msg-${key}" class="flex ${isMe ? 'justify-end' : 'justify-start'} items-end gap-2 my-1 ${enterClass}" data-search-text="${searchText}">
+          ${!isMe ? `<div onclick="showUserProfile('${senderKey}')" class="w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-white text-[10px] font-bold cursor-pointer mb-1" style="background:${avColor};">${escapeHtml((m.senderInitial || m.sender || 'U').charAt(0).toUpperCase())}</div>` : ''}
+          <div class="max-w-[85%] sm:max-w-md md:max-w-lg p-2.5 rounded-xl space-y-2 ${bubbleBase}">
+            <div class="flex justify-between items-center">
+              <span class="text-[8px] uppercase font-bold px-1.5 py-0.5 rounded-full" style="background:${isMe ? 'rgba(255,255,255,0.2)' : subjectColor + '22'}; color:${isMe ? '#fff' : subjectColor};">${escapeHtml(m.subject || 'Media')}</span>
+              <div class="flex items-center gap-2">
+                <button onclick="toggleReactPicker('${key}')" class="${iconColor} text-[10px]" title="React"><i class="fa-regular fa-face-smile"></i></button>
+                <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : iconColor} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
+                ${canDelete ? `<button onclick="deleteMessage('${key}')" class="${iconColor} hover:!text-signalDanger text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
+              </div>
+            </div>
+
+            <p class="text-[12.5px] font-medium leading-snug whitespace-pre-wrap">${escapeHtml(m.text)}</p>
+
+            ${m.imageUrl ? `
+              <div class="w-full max-h-52 overflow-hidden rounded-lg bg-black/20 cursor-zoom-in" onclick="openModal('${m.imageUrl}')">
+                <img src="${m.imageUrl}" class="w-full h-52 object-cover hover:scale-105 transition duration-300">
+              </div>
+            ` : ''}
+
+            <div class="flex items-center justify-between text-[9px] p-1.5 rounded-lg" style="background:rgba(0,0,0,0.06);">
+              <div class="flex items-center space-x-2">
+                <div class="flex items-center cursor-pointer" onclick="showSolvingModal('${key}')" title="Click to view who is solving">
+                  ${solvingArr.length > 0 ? `
+                    <div class="flex items-center mr-1.5">
+                      ${solvingArr.map((u, idx) => `<div class="w-5 h-5 rounded-full text-white text-[9px] font-bold flex items-center justify-center border border-white dark:border-waDarkBg shadow-sm ${idx > 0 ? '-ml-2' : ''}" style="background:${avatarColor(u.name)};" title="${escapeHtml(u.name)}">${escapeHtml(u.initial)}</div>`).join('')}
+                    </div>
+                  ` : ''}
+                  <div class="flex items-center space-x-1.5">
+                    <span class="${m.status === 'unsolved' ? 'text-amber-500 dark:text-amber-300 font-bold' : ''}"><i class="fa-solid fa-circle-dot"></i> ${m.status === 'unsolved' ? 'Unsolved' : (solvingArr.length > 0 ? `${solvingArr.length} solving` : 'Solving')}</span>
+                    ${m.status === 'solved' ? `<span>•</span><span class="text-emerald-500 dark:text-emerald-300 font-bold"><i class="fa-solid fa-circle-check"></i> Solved</span>` : ''}
+                  </div>
+                </div>
+              </div>
+              <div class="flex gap-1 ml-2">
+                ${m.status === 'unsolved' || m.status === 'solving' ? `<button onclick="setSolving('${key}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow transition">Solving</button>` : ''}
+                ${m.status === 'solving' ? `<button onclick="setSolved('${key}')" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow transition">Mark Solved</button>` : ''}
+              </div>
+            </div>
+
+            ${renderReactionPills(key, m.reactions, myNickKey)}
+            ${renderReactPicker(key)}
+            <p class="font-mono-ui text-[8px] text-right opacity-60">${escapeHtml(m.time)}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderChatFeed() {
+      const feed = document.getElementById('chatFeed');
+      const wasNearBottom = isNearBottom();
+      const prevScrollTop = feed.scrollTop;
+      const msgEntries = Object.entries(state.messages);
+      const now = Date.now();
+      const myNickKey = state.currentUser ? state.currentUser.nickname.replace(/[.#$[\]]/g, "_") : null;
+
+      if (msgEntries.length === 0) {
+        feed.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center p-6 text-gray-400 space-y-2">
+          <i class="fa-regular fa-comments text-3xl mb-1 opacity-60"></i>
+          <p class="text-xs font-semibold">It's quiet in here.</p>
+          <p class="text-[11px] text-gray-400 dark:text-gray-500">Send the first message to get this room started.</p>
+        </div>`;
+        state.knownMsgKeys = {};
+        state.lastFeedCount = 0;
+        return;
+      }
+
+      msgEntries.sort((a, b) => (a[1].timestamp || 0) - (b[1].timestamp || 0));
+
+      const isFirstRenderThisRoom = !state.roomFirstRenderDone;
+      state.roomFirstRenderDone = true;
+
+      let lastDayLabel = null;
+      let html = `<div class="w-full mx-auto space-y-2.5 px-2 sm:px-8 md:px-20 lg:px-28 pb-2">`;
+
+      for (const [key, m] of msgEntries) {
+        const dayLabel = formatDayLabel(m.timestamp || now);
+        if (dayLabel !== lastDayLabel) {
+          html += `<div class="flex items-center justify-center my-3"><span class="font-mono-ui text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 bg-gray-200/70 dark:bg-white/5 px-3 py-1 rounded-full">${dayLabel}</span></div>`;
+          lastDayLabel = dayLabel;
+        }
+
+        const isMe = state.currentUser && m.sender === state.currentUser.nickname;
+        const canDelete = state.currentUser && state.currentUser.isAdmin;
+        const isPinned = m.pinned && (now - (m.pinnedAt || 0) < 86400000);
+        const senderKey = m.senderKey || (m.sender ? m.sender.replace(/[.#$[\]]/g, "_") : '');
+        const isNew = !state.knownMsgKeys[key] && !isFirstRenderThisRoom;
+        const enterClass = isNew ? 'msg-enter' : '';
+        state.knownMsgKeys[key] = true;
+
+        if (m.type === 'text') {
+          html += renderTextMessage(key, m, isMe, canDelete, isPinned, senderKey, enterClass, myNickKey);
+        } else if (m.type === 'problem') {
+          html += renderProblemMessage(key, m, isMe, canDelete, isPinned, senderKey, enterClass, myNickKey);
+        }
+      }
+      html += `</div>`;
+      feed.innerHTML = html;
+
+      if (wasNearBottom || state.forceScrollBottom) {
+        feed.scrollTop = feed.scrollHeight;
+        state.forceScrollBottom = false;
+        unreadScrollCount = 0;
+        updateScrollBadge();
+        const sbb = document.getElementById('scrollBottomBtn');
+        if (sbb) sbb.classList.add('hidden');
+      } else {
+        feed.scrollTop = prevScrollTop;
+        const newCount = msgEntries.length - (state.lastFeedCount || msgEntries.length);
+        if (newCount > 0) {
+          unreadScrollCount += newCount;
+          updateScrollBadge();
+          const sbb = document.getElementById('scrollBottomBtn');
+          if (sbb) sbb.classList.remove('hidden');
+        }
+      }
+      state.lastFeedCount = msgEntries.length;
+
+      // Re-apply active search filter (if any) to the freshly rendered messages
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput && searchInput.value) filterMessages(searchInput.value);
+    }
+
+    /* ---------------- GLOBAL EVENT WIRING ---------------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      const feedEl = document.getElementById('chatFeed');
+      if (feedEl) feedEl.addEventListener('scroll', handleFeedScroll);
+
+      const messageInputEl = document.getElementById('messageInput');
+      if (messageInputEl) {
+        messageInputEl.addEventListener('paste', function (e) {
+          const items = e.clipboardData && e.clipboardData.items;
+          if (!items) return;
+          for (const item of items) {
+            if (item.type && item.type.startsWith('image/')) {
+              const file = item.getAsFile();
+              if (file) { e.preventDefault(); processSelectedFile(file); }
+            }
+          }
+        });
+      }
+
+      const dropZone = document.getElementById('rightPane');
+      if (dropZone) {
+        ['dragover', 'dragenter'].forEach(evt => dropZone.addEventListener(evt, e => {
+          e.preventDefault();
+          dropZone.classList.add('ring-2', 'ring-waGreen');
+        }));
+        ['dragleave', 'drop'].forEach(evt => dropZone.addEventListener(evt, e => {
+          e.preventDefault();
+          dropZone.classList.remove('ring-2', 'ring-waGreen');
+        }));
+        dropZone.addEventListener('drop', e => {
+          const file = e.dataTransfer.files && e.dataTransfer.files[0];
+          if (file) processSelectedFile(file);
+        });
+      }
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          closeProfileModal();
+          closeSolvingModal();
+          closeModal();
+          const sb = document.getElementById('searchBar');
+          if (sb && !sb.classList.contains('hidden')) toggleSearchBar();
+        }
+      });
+    });
 
     checkLocalLogin();
   </script>
