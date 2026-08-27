@@ -136,9 +136,7 @@
         </div>
         <div>
           <h1 class="font-bold leading-tight text-base">MATRIX TEAM</h1>
-          <p class="text-xs text-green-200 flex items-center gap-1">
-            <span class="w-2 h-2 rounded-full bg-waLightGreen inline-block"></span> <span id="activeCountLabel">0 Online Members</span>
-          </p>
+          <p class="hidden"><span id="activeCountLabel"></span></p>
         </div>
       </div>
     </div>
@@ -276,13 +274,13 @@
       </header>
 
       <!-- Pinned Message Banner -->
-      <div id="pinnedBanner" class="hidden bg-waDarkBubble text-white px-4 py-2 flex items-center justify-between text-xs shadow-md shrink-0">
-        <div class="flex items-center space-x-2 overflow-hidden">
-          <i class="fa-solid fa-thumbtack text-[10px] opacity-75"></i>
-          <span class="font-bold">Pinned:</span>
-          <span class="truncate" id="pinnedBannerText"></span>
+      <div id="pinnedBanner" class="hidden bg-waDarkBubble text-white px-4 py-2 flex items-center justify-between text-xs shadow-md shrink-0 cursor-pointer">
+        <div class="flex items-center space-x-2 overflow-hidden w-full">
+          <i class="fa-solid fa-thumbtack text-[10px] opacity-75 shrink-0"></i>
+          <span class="font-bold shrink-0">Pinned:</span>
+          <span class="truncate whitespace-nowrap overflow-hidden text-ellipsis w-full" id="pinnedBannerText"></span>
         </div>
-        <button onclick="unpinActiveMessage()" class="ml-2 opacity-75 hover:opacity-100 p-1"><i class="fa-solid fa-times"></i></button>
+        <button onclick="unpinActiveMessage()" class="ml-2 opacity-75 hover:opacity-100 p-1 shrink-0"><i class="fa-solid fa-times"></i></button>
       </div>
 
       <!-- Messages Feed -->
@@ -960,8 +958,6 @@
     function renderActiveMembers() {
       const list = document.getElementById('activeMembersList');
       const membersEntries = Object.entries(state.members);
-      const activeCount = membersEntries.filter(([_, m]) => m.status === 'online').length;
-      document.getElementById('activeCountLabel').innerText = `${activeCount} Online Members`;
 
       if(membersEntries.length === 0) return;
       const isAdminUser = state.currentUser && state.currentUser.isAdmin;
@@ -984,7 +980,6 @@
               ${isAdminUser && !isMe ? `
                 <button onclick="terminateMember('${nickKey}', '${m.email}', '${m.nickname}')" class="px-2 py-0.5 bg-red-600 hover:bg-red-700 text-white text-[9px] font-bold rounded shadow transition">Terminate</button>
               ` : ''}
-              <span class="w-2.5 h-2.5 rounded-full ${m.status==='online'?'bg-green-500':'bg-gray-400 opacity-50'}"></span>
             </div>
           </div>
         `;
@@ -1109,7 +1104,7 @@
     function deleteMessage(key) {
       if (!state.currentUser) return;
       const msg = state.messages[key];
-      if (msg && (msg.sender === state.currentUser.nickname || state.currentUser.isAdmin)) {
+      if (msg && state.currentUser.isAdmin) {
         db.ref(`rooms/${state.currentRoomId}/messages/${key}`).remove();
       }
     }
@@ -1147,9 +1142,11 @@
       const now = Date.now();
 
       let activePinned = null;
+      let activePinnedKey = null;
       for (const [key, m] of msgEntries) {
         if (m.pinned && (now - (m.pinnedAt || 0) < 86400000)) {
           activePinned = m;
+          activePinnedKey = key;
           break;
         }
       }
@@ -1157,8 +1154,18 @@
       if (activePinned) {
         bannerText.innerText = `${activePinned.sender}: ${activePinned.text || 'Image'}`;
         banner.classList.remove('hidden');
+        banner.onclick = (e) => {
+          if(e.target.closest('button')) return;
+          const msgEl = document.getElementById('msg-' + activePinnedKey);
+          if (msgEl) {
+             msgEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+             msgEl.classList.add('ring-2', 'ring-waGreen', 'ring-offset-2', 'transition-all');
+             setTimeout(() => msgEl.classList.remove('ring-2', 'ring-waGreen', 'ring-offset-2', 'transition-all'), 2000);
+          }
+        };
       } else {
         banner.classList.add('hidden');
+        banner.onclick = null;
       }
     }
 
@@ -1218,18 +1225,18 @@
         <div class="w-full mx-auto space-y-2.5 px-6 sm:px-12 md:px-24 lg:px-32">
           ${msgEntries.map(([key, m]) => {
             const isMe = state.currentUser && m.sender === state.currentUser.nickname;
-            const canDelete = isMe || (state.currentUser && state.currentUser.isAdmin);
+            const canDelete = state.currentUser && state.currentUser.isAdmin;
             const isPinned = m.pinned && (now - (m.pinnedAt || 0) < 86400000);
             const senderKey = m.senderKey || (m.sender ? m.sender.replace(/[.#$[\]]/g, "_") : '');
 
             if (m.type === 'text') {
               return `
-                <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-                  <div class="max-w-[82%] sm:max-w-md md:max-w-lg px-3.5 py-2 rounded-xl text-[12px] ${isMe ? 'bg-waDarkBubble text-white rounded-br-sm' : 'bg-white dark:bg-waDarkIncoming text-gray-800 dark:text-gray-100 rounded-bl-sm shadow-sm'}">
+                <div id="msg-${key}" class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                  <div class="max-w-[82%] sm:max-w-md md:max-w-lg px-3.5 py-2 rounded-xl text-[12px] bg-waGreen text-white ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm shadow-sm'}">
                     <div class="flex items-center justify-between gap-2 mb-0.5">
-                      ${!isMe ? `<p class="text-[10px] font-bold text-waGreen flex items-center gap-1 cursor-pointer hover:underline" onclick="showUserProfile('${senderKey}')">${m.sender} ${m.isAdmin ? '<span class="bg-red-600 text-white text-[7px] px-1 rounded">ADMIN</span>' : ''}</p>` : (m.isAdmin ? `<p class="text-[10px] font-bold text-red-300 cursor-pointer hover:underline" onclick="showUserProfile('${senderKey}')">ADMIN</p>`: '')}
+                      ${!isMe ? `<p class="text-[10px] font-bold text-gray-200 flex items-center gap-1 cursor-pointer hover:underline" onclick="showUserProfile('${senderKey}')">${m.sender} ${m.isAdmin ? '<span class="bg-red-600 text-white text-[7px] px-1 rounded">ADMIN</span>' : ''}</p>` : (m.isAdmin ? `<p class="text-[10px] font-bold text-red-300 cursor-pointer hover:underline" onclick="showUserProfile('${senderKey}')">ADMIN</p>`: '')}
                       <div class="flex items-center gap-1.5">
-                        <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-300 hover:text-waLightGreen'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
+                        <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-300 hover:text-white'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
                         ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-300 hover:text-red-400 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
                       </div>
                     </div>
@@ -1243,17 +1250,17 @@
               const solvingArr = Object.values(solvingUsersObj);
 
               return `
-                <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} my-1">
-                  <div class="max-w-[88%] sm:max-w-md md:max-w-lg bg-white dark:bg-waDarkIncoming rounded-xl p-2.5 shadow-sm border border-gray-200 dark:border-gray-700/50 space-y-2 ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}">
+                <div id="msg-${key}" class="flex flex-col ${isMe ? 'items-end' : 'items-start'} my-1">
+                  <div class="max-w-[88%] sm:max-w-md md:max-w-lg bg-waGreen text-white rounded-xl p-2.5 shadow-sm border border-gray-200 dark:border-gray-700/50 space-y-2 ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}">
                     <div class="flex justify-between items-center">
-                      <span class="text-[8px] uppercase font-bold px-1.5 py-0.5 rounded bg-waGreen/10 text-waGreen">${m.subject || 'Media'}</span>
+                      <span class="text-[8px] uppercase font-bold px-1.5 py-0.5 rounded bg-white/20 text-white">${m.subject || 'Media'}</span>
                       <div class="flex items-center gap-1.5">
-                        <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-400 hover:text-waLightGreen'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
-                        ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-400 hover:text-red-500 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        <button onclick="togglePinMessage('${key}')" class="${isPinned ? 'text-waLightGreen' : 'text-gray-300 hover:text-white'} text-[10px]" title="Pin for 24h"><i class="fa-solid fa-thumbtack"></i></button>
+                        ${canDelete ? `<button onclick="deleteMessage('${key}')" class="text-gray-300 hover:text-red-500 text-[10px]" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
                       </div>
                     </div>
 
-                    <p class="text-[12px] text-gray-800 dark:text-gray-100 font-medium leading-snug">${m.text}</p>
+                    <p class="text-[12px] text-white font-medium leading-snug">${m.text}</p>
 
                     ${m.imageUrl ? `
                       <div class="w-full max-h-48 overflow-hidden rounded-lg bg-black/30 cursor-pointer" onclick="openModal('${m.imageUrl}')">
@@ -1261,7 +1268,7 @@
                       </div>
                     ` : ''}
 
-                    <div class="flex items-center justify-between text-[9px] bg-gray-50 dark:bg-waDarkBg p-1.5 rounded-lg border border-gray-100 dark:border-gray-800">
+                    <div class="flex items-center justify-between text-[9px] bg-white/10 p-1.5 rounded-lg border border-white/20">
                       <div class="flex items-center space-x-2">
                         <!-- Left side circular profiles for those solving -->
                         <div class="flex items-center cursor-pointer" onclick="showSolvingModal('${key}')" title="Click to view who is solving">
@@ -1272,9 +1279,9 @@
                               `).join('')}
                             </div>
                           ` : ''}
-                          <div class="flex items-center space-x-1.5">
-                            <span class="${m.status==='unsolved'?'text-amber-500 font-bold':'text-gray-500'}"><i class="fa-solid fa-circle-dot"></i> ${m.status === 'unsolved' ? 'Unsolved' : (solvingArr.length > 0 ? `${solvingArr.length} solving` : 'Solving')}</span>
-                            ${m.status==='solved' ? `<span class="text-gray-500">•</span><span class="text-green-500 font-bold">Solved</span>` : ''}
+                          <div class="flex items-center space-x-1.5 text-white">
+                            <span class="${m.status==='unsolved'?'text-amber-300 font-bold':'text-gray-200'}"><i class="fa-solid fa-circle-dot"></i> ${m.status === 'unsolved' ? 'Unsolved' : (solvingArr.length > 0 ? `${solvingArr.length} solving` : 'Solving')}</span>
+                            ${m.status==='solved' ? `<span class="text-gray-200">•</span><span class="text-green-300 font-bold">Solved</span>` : ''}
                           </div>
                         </div>
                       </div>
