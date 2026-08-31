@@ -118,7 +118,6 @@
   <div id="authModal" class="fixed inset-0 z-40 bg-waDarkBg/95 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white dark:bg-waDarkPanel border border-gray-200 dark:border-gray-700 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4">
       <div class="text-center space-y-2">
-        <!-- Logo Representation in Authentication Modal -->
         <div class="mx-auto mb-2 w-fit brand-ring">
             <img src="matrix-logo.jpg" alt="Matrix Logo" class="relative w-20 h-20 mx-auto object-cover rounded-full drop-shadow-[0_0_12px_rgba(79,70,229,0.45)]">
         </div>
@@ -188,7 +187,6 @@
         <i class="fa-solid fa-bars"></i>
       </button>
       <div class="flex items-center space-x-3 cursor-pointer" onclick="backToChatList()">
-        <!-- Top Navigation Bar Logo -->
         <div class="flex items-center justify-center brand-ring">
             <img src="matrix-logo.jpg" alt="Matrix Logo" class="relative w-10 h-10 object-cover rounded-full shadow">
         </div>
@@ -208,10 +206,9 @@
   <!-- Main Application Workspace: 2-Pane Display -->
   <div class="flex-1 flex overflow-hidden relative">
 
-    <!-- LEFT PANE: Chatrooms, Members & Settings Navigation Pane -->
+    <!-- LEFT PANE: Chatrooms, Members & Settings -->
     <aside id="sidebar" class="w-full md:w-80 bg-white dark:bg-waDarkPanel border-r border-gray-200 dark:border-gray-700 flex flex-col shrink-0 shadow-xl md:shadow-none transition-all duration-200 z-20">
 
-      <!-- User Mini Profile -->
       <div class="p-4 bg-gray-50 dark:bg-gray-800/40 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 shrink-0">
         <div class="flex items-center space-x-3">
           <div class="w-10 h-10 rounded-full bg-waGreen flex items-center justify-center text-white font-bold text-lg shadow-sm">
@@ -227,7 +224,6 @@
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
       <div class="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-waDarkPanel shrink-0">
         <button id="tabBtn-topics" onclick="switchSidebarTab('topics')" class="flex-1 py-3 text-xs uppercase tracking-wider font-bold border-b-2 border-waGreen text-waGreen transition">Rooms</button>
         <button id="tabBtn-members" onclick="switchSidebarTab('members')" class="flex-1 py-3 text-xs uppercase tracking-wider font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition">Members</button>
@@ -255,8 +251,6 @@
 
         <!-- View: User Settings -->
         <div id="sideView-settings" class="hidden p-4 space-y-5">
-
-          <!-- Independent Profile Section -->
           <div>
             <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Profile Details</h4>
             <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-lg border border-gray-200 dark:border-gray-700 space-y-2 text-xs text-gray-700 dark:text-gray-300">
@@ -266,7 +260,6 @@
             </div>
           </div>
 
-          <!-- Independent Change Password Section -->
           <div>
             <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Change Password</h4>
             <div class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-lg border border-gray-200 dark:border-gray-700 space-y-2 flex flex-col">
@@ -275,7 +268,6 @@
             </div>
           </div>
 
-          <!-- Admin Recommendation (Formspree) -->
           <div>
              <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Recommendation to Admin</h4>
              <form id="recommendationForm" action="https://formspree.io/f/xppabylk" method="POST" class="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-lg border border-gray-200 dark:border-gray-700 space-y-2 flex flex-col" onsubmit="handleRecommendationSubmit(event)">
@@ -287,7 +279,6 @@
              </form>
           </div>
 
-          <!-- Preferences -->
           <div>
             <h4 class="text-xs font-bold text-waGreen uppercase mb-2">Preferences</h4>
             <div class="space-y-3">
@@ -327,10 +318,8 @@
     <!-- RIGHT PANE: Selected Chatroom Conversation Display -->
     <main id="rightPane" class="flex-1 flex flex-col bg-gray-100 dark:bg-waDarkBg h-full min-w-0 hidden md:flex relative">
 
-      <!-- Room Header -->
       <header class="bg-white dark:bg-waDarkHeader border-b border-gray-200 dark:border-gray-800 px-4 py-3 flex justify-between items-center shrink-0 shadow-sm">
         <div class="flex items-center space-x-3 overflow-hidden">
-          <!-- Small tab back arrow button pointing to left rooms pane -->
           <button onclick="backToChatList()" class="md:hidden text-waGreen hover:text-waTeal p-1 text-lg font-bold" title="Back to Rooms">
             <i class="fa-solid fa-arrow-left"></i>
           </button>
@@ -346,7 +335,6 @@
         </div>
       </header>
 
-      <!-- Search Bar -->
       <div id="searchBar" class="hidden bg-gray-50 dark:bg-waDarkPanel border-b border-gray-200 dark:border-gray-800 px-4 py-2 items-center gap-2 shrink-0">
         <i class="fa-solid fa-magnifying-glass text-gray-400 text-xs"></i>
         <input id="searchInput" type="text" oninput="filterMessages(this.value)" placeholder="Search this room..." class="flex-1 bg-transparent text-xs focus:outline-none text-gray-800 dark:text-gray-100 placeholder-gray-400 py-1">
@@ -354,7 +342,6 @@
         <button onclick="toggleSearchBar()" class="text-gray-400 hover:text-signalDanger text-xs p-1"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <!-- Pinned Message Banner -->
       <div id="pinnedBanner" class="hidden bg-waDarkBubble text-white px-4 py-2 flex items-center justify-between text-xs shadow-md shrink-0 cursor-pointer">
         <div class="flex items-center space-x-2 overflow-hidden w-full">
           <i class="fa-solid fa-thumbtack text-[10px] opacity-75 shrink-0"></i>
@@ -364,7 +351,6 @@
         <button onclick="unpinActiveMessage()" class="ml-2 opacity-75 hover:opacity-100 p-1 shrink-0"><i class="fa-solid fa-times"></i></button>
       </div>
 
-      <!-- Messages Feed -->
       <div id="chatFeed" class="flex-1 overflow-y-auto p-4 custom-scrollbar scroll-smooth">
         <div class="space-y-3 px-6 pt-4">
           <div class="skeleton-line h-10 w-2/3 rounded-xl"></div>
@@ -373,22 +359,17 @@
         </div>
       </div>
 
-      <!-- Scroll to bottom floating button -->
       <button id="scrollBottomBtn" onclick="scrollToBottomManual()" class="hidden absolute bottom-24 right-6 z-20 bg-white dark:bg-waDarkHeader shadow-lg rounded-full w-10 h-10 items-center justify-center text-waGreen border border-gray-200 dark:border-gray-700 hover:scale-105 transition">
         <i class="fa-solid fa-arrow-down"></i>
         <span id="scrollUnreadBadge" class="hidden absolute -top-1 -right-1 bg-signalDanger text-white text-[9px] rounded-full px-1.5 py-0.5 font-mono-ui"></span>
       </button>
 
-      <!-- Typing indicator -->
       <div id="typingIndicator" class="hidden px-4 py-1.5 text-[11px] text-gray-500 dark:text-gray-400 italic flex items-center gap-2 bg-gray-50 dark:bg-waDarkHeader/70 shrink-0 border-t border-gray-100 dark:border-gray-800">
         <span id="typingText"></span>
         <span class="flex gap-0.5"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></span>
       </div>
 
-      <!-- Message Input Area -->
       <footer class="bg-white dark:bg-waDarkHeader border-t border-gray-200 dark:border-gray-800 p-3 shrink-0">
-
-        <!-- Attachment Preview Bar -->
         <div id="attachmentPreviewBar" class="hidden mb-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between border border-gray-300 dark:border-gray-700">
           <div class="flex items-center space-x-3">
             <img id="previewImgThumb" class="h-10 w-10 object-cover rounded shadow-sm border border-gray-400 hidden">
@@ -419,7 +400,6 @@
 
   </div>
 
-  <!-- User Profile Modal (Click on Name) -->
   <div id="profileModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white dark:bg-waDarkPanel rounded-xl shadow-2xl w-full max-w-xs overflow-hidden border border-gray-200 dark:border-gray-700 animate-popIn">
       <div class="bg-waTeal p-5 text-center relative">
@@ -437,7 +417,6 @@
     </div>
   </div>
 
-  <!-- Solving Members Modal Pane -->
   <div id="solvingModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white dark:bg-waDarkPanel rounded-xl shadow-2xl w-full max-w-xs overflow-hidden border border-gray-200 dark:border-gray-700 animate-popIn">
       <div class="bg-waTeal p-4 text-center relative">
@@ -445,7 +424,6 @@
         <h3 class="text-white font-bold text-sm font-display">Members Solving Question</h3>
       </div>
       <div id="solvingModalList" class="p-4 bg-gray-50 dark:bg-waDarkBg space-y-2 max-h-60 overflow-y-auto custom-scrollbar text-xs">
-        <!-- Dynamically populated list -->
       </div>
       <div class="p-3 border-t border-gray-200 dark:border-gray-700 text-center bg-white dark:bg-waDarkPanel">
         <button onclick="closeSolvingModal()" class="px-6 py-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-full transition">Close</button>
@@ -453,7 +431,6 @@
     </div>
   </div>
 
-  <!-- Full Screen Image Modal -->
   <div id="imageModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModal()">
     <button class="absolute top-4 right-4 text-white hover:text-signalDanger text-3xl p-2 focus:outline-none"><i class="fa-solid fa-times"></i></button>
     <img id="modalImg" class="max-w-full max-h-full object-contain rounded shadow-2xl cursor-zoom-out">
@@ -497,7 +474,8 @@
       Biology: '#F43F5E',
       Computer: '#8B5CF6',
       Economics: '#FB923C',
-      Geography: '#14B8A6'
+      Geography: '#14B8A6',
+      DM: '#EC4899' // Pink color for private DMs
     };
 
     const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '🙏'];
@@ -506,6 +484,7 @@
       currentUser: null,
       currentRoomId: 'announcements',
       userRooms: [],
+      dmRooms: [], // Tracks active private 1-on-1 chats
       members: {},
       messages: {},
       selectedFileObject: null,
@@ -555,8 +534,13 @@
       if (sameDay(d, yest)) return 'Yesterday';
       return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
     }
+    
+    // Generate an alphabetical, unique Room ID specifically for a DM pairing
+    function getDMRoomId(key1, key2) {
+      return 'dm_' + [key1, key2].sort().join('_');
+    }
 
-    /* ---------------- TOASTS (replaces most alert() calls) ---------------- */
+    /* ---------------- TOASTS ---------------- */
     function toast(message, type) {
       type = type || 'info';
       const stack = document.getElementById('toastStack');
@@ -588,7 +572,7 @@
         g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
         o.connect(g); g.connect(ctx.destination);
         o.start(); o.stop(ctx.currentTime + 0.36);
-      } catch (e) { /* audio not available, ignore */ }
+      } catch (e) { }
     }
     function enableSound() { soundEnabled = true; localStorage.setItem('matrix_sound', 'true'); toast('Sound alerts turned on.', 'success'); }
     function disableSound() { soundEnabled = false; localStorage.setItem('matrix_sound', 'false'); toast('Sound alerts muted.', 'info'); }
@@ -633,7 +617,6 @@
       const password = document.getElementById('loginPassword').value.trim();
 
       if (!nickname || !password) return;
-
       showLoader("Logging in...");
 
       try {
@@ -681,7 +664,6 @@
       const password = document.getElementById('joinPassword').value.trim();
 
       if (!fullName || !nickname || !combo || !email || !password) return;
-
       showLoader("Registering & Entering Portal...");
 
       try {
@@ -829,21 +811,54 @@
       });
     }
 
+    // Dynamic generation of established DM pairings 
+    function updateDMRooms() {
+      if (!state.currentUser) return;
+      const myKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
+      const myUser = state.members[myKey];
+      const dmKeys = (myUser && myUser.dms) ? myUser.dms : {};
+      
+      const newDMRooms = [];
+      for (const otherKey in dmKeys) {
+        const otherUser = state.members[otherKey];
+        if (otherUser) {
+          newDMRooms.push({
+            id: getDMRoomId(myKey, otherKey),
+            isDM: true,
+            otherNickKey: otherKey,
+            name: otherUser.nickname,
+            icon: 'fa-user',
+            subject: 'DM' // Identifies this specifically as a DM
+          });
+        }
+      }
+      state.dmRooms = newDMRooms;
+      renderChatRoomsList();
+      initGlobalBadges(); 
+    }
+
     function renderChatRoomsList() {
       const container = document.getElementById('roomsListContainer');
       state.userRooms = determineUserRooms();
-      document.getElementById('roomCountBadge').innerText = `${state.userRooms.length} Rooms`;
+      
+      // Combine normal subject rooms with private DMs
+      const allRooms = [...state.userRooms, ...(state.dmRooms || [])];
+      document.getElementById('roomCountBadge').innerText = `${allRooms.length} Rooms`;
 
-      container.innerHTML = state.userRooms.map(room => {
+      container.innerHTML = allRooms.map(room => {
         const isActive = state.currentRoomId === room.id;
         const unread = state.unreadCounts[room.id] || 0;
-        const color = SUBJECT_COLORS[room.subject] || '#64748B';
+        
+        // Define color schema: Users get generated colors in DM
+        let color = SUBJECT_COLORS[room.subject] || '#64748B';
+        if (room.isDM) color = avatarColor(room.name);
+
         const badgeHtml = unread > 0 ? `<span class="bg-signalDanger text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm font-mono-ui">${unread}</span>` : '';
 
         return `
           <div onclick="selectRoom('${room.id}')" class="p-3.5 flex items-center space-x-3 cursor-pointer rounded-xl transition border-l-4 ${isActive ? 'bg-gray-100 dark:bg-waDarkHeader' : 'hover:bg-gray-50 dark:hover:bg-gray-800/40 border-transparent'}" style="${isActive ? `border-color:${color};` : ''}">
-            <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-base shrink-0 subject-swatch" style="background:${color}22; color:${color};">
-              <i class="fa-solid ${room.icon}"></i>
+            <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-base shrink-0 subject-swatch" style="background:${room.isDM ? color : color + '22'}; color:${room.isDM ? '#fff' : color};">
+              ${room.isDM ? escapeHtml(room.name.charAt(0).toUpperCase()) : `<i class="fa-solid ${room.icon}"></i>`}
             </div>
             <div class="flex-1 min-w-0 flex items-center justify-between">
               <h4 class="font-bold text-xs text-gray-900 dark:text-white truncate">${escapeHtml(room.name)}</h4>
@@ -864,20 +879,31 @@
       state.forceScrollBottom = true;
       unreadScrollCount = 0;
       updateScrollBadge();
+      
       const sbb = document.getElementById('scrollBottomBtn');
       if (sbb) sbb.classList.add('hidden');
       const sb = document.getElementById('searchBar');
       if (sb && !sb.classList.contains('hidden')) toggleSearchBar();
 
-      const room = ALL_CHAT_ROOMS.find(r => r.id === roomId) || ALL_CHAT_ROOMS[0];
-      const color = SUBJECT_COLORS[room.subject] || '#64748B';
+      const allRooms = [...state.userRooms, ...(state.dmRooms || [])];
+      const room = allRooms.find(r => r.id === roomId) || allRooms[0];
+      
+      let color = SUBJECT_COLORS[room.subject] || '#64748B';
+      if (room.isDM) color = avatarColor(room.name);
 
-      // Update Conversation Header
+      // Update Conversation Header (Top right layout)
       document.getElementById('activeRoomTitle').innerText = room.name;
       const avatarEl = document.getElementById('activeRoomAvatar');
-      avatarEl.innerHTML = `<i class="fa-solid ${room.icon}"></i>`;
-      avatarEl.style.background = color;
-      avatarEl.style.color = '#fff';
+      
+      if (room.isDM) {
+        avatarEl.innerHTML = escapeHtml(room.name.charAt(0).toUpperCase());
+        avatarEl.style.background = color;
+        avatarEl.style.color = '#fff';
+      } else {
+        avatarEl.innerHTML = `<i class="fa-solid ${room.icon}"></i>`;
+        avatarEl.style.background = color;
+        avatarEl.style.color = '#fff';
+      }
 
       // On small screens, hide left rooms pane and display right conversation pane
       const sidebarEl = document.getElementById('sidebar');
@@ -906,9 +932,29 @@
       rightPaneEl.classList.add('hidden', 'md:flex');
     }
 
+    // Function explicitly used to initialize and redirect into a new direct message conversation
+    function openPrivateChat(otherNickKey) {
+      if (!state.currentUser) return;
+      const myKey = state.currentUser.nickname.replace(/[.#$[\]]/g, "_");
+
+      // Save connection immediately to both members' profile structures
+      db.ref(`members/${myKey}/dms/${otherNickKey}`).set(true);
+      db.ref(`members/${otherNickKey}/dms/${myKey}`).set(true);
+
+      const dmId = getDMRoomId(myKey, otherNickKey);
+
+      // Force visual update locally so selectRoom picks up the valid dynamically injected metadata correctly
+      if (!state.members[myKey].dms) state.members[myKey].dms = {};
+      state.members[myKey].dms[otherNickKey] = true;
+      updateDMRooms();
+
+      selectRoom(dmId);
+    }
+
     /* ---------------- DATABASE & LISTENERS ---------------- */
     function initGlobalBadges() {
-      state.userRooms.forEach(room => {
+      const allRooms = [...state.userRooms, ...(state.dmRooms || [])];
+      allRooms.forEach(room => {
         if (!globalRoomListeners[room.id]) {
           globalRoomListeners[room.id] = true;
           db.ref(`rooms/${room.id}/messages`).on('value', snap => {
@@ -1001,6 +1047,7 @@
       db.ref('members').on('value', (snapshot) => {
         state.members = snapshot.val() || {};
         renderActiveMembers();
+        updateDMRooms(); 
       });
 
       if (state.currentUser) {
@@ -1223,6 +1270,11 @@
               </div>
             </div>
             <div class="flex items-center space-x-2 shrink-0">
+              ${!isMe ? `
+                <button onclick="openPrivateChat('${nickKey}')" class="w-6 h-6 flex items-center justify-center rounded-md bg-waGreen/15 text-waGreen hover:bg-waGreen hover:text-white transition" title="Message ${escapeHtml(m.nickname)} privately">
+                  <i class="fa-solid fa-comment-dots text-[10px]"></i>
+                </button>
+              ` : ''}
               ${isAdminUser && !isMe ? `
                 <button onclick="terminateMember('${nickKey}', '${m.email}', '${m.nickname}')" class="px-2 py-0.5 bg-signalDanger hover:bg-rose-700 text-white text-[9px] font-bold rounded shadow transition">Terminate</button>
               ` : ''}
@@ -1302,6 +1354,9 @@
       const now = new Date();
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const roomMessagesRef = db.ref(`rooms/${state.currentRoomId}/messages`);
+      
+      const isDM = state.currentRoomId.startsWith('dm_');
+      const msgSubject = isDM ? 'DM' : state.currentRoomId;
 
       if (state.selectedFileObject) {
         const file = state.selectedFileObject;
@@ -1317,7 +1372,7 @@
             senderInitial: state.currentUser.initial,
             isAdmin: state.currentUser.isAdmin || false,
             text: text || `Screenshot: ${file.name}`,
-            subject: state.currentRoomId,
+            subject: msgSubject,
             imageUrl: compressedBase64,
             status: "unsolved",
             time: timeStr,
@@ -1358,7 +1413,8 @@
     function deleteMessage(key) {
       if (!state.currentUser) return;
       const msg = state.messages[key];
-      if (msg && state.currentUser.isAdmin) {
+      // Every user can delete their own message anywhere; Admins can delete anyone's messages
+      if (msg && (state.currentUser.isAdmin || msg.sender === state.currentUser.nickname)) {
         db.ref(`rooms/${state.currentRoomId}/messages/${key}`).remove();
       }
     }
@@ -1620,7 +1676,9 @@
         ? 'bg-gradient-to-br from-waGreen to-indigo-500 text-white rounded-br-sm'
         : 'bg-white dark:bg-waDarkIncoming text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700/60 rounded-bl-sm shadow-sm';
       const iconColor = isMe ? 'text-white/70 hover:text-white' : 'text-gray-400 hover:text-waGreen dark:hover:text-waLightGreen';
-      const roomDef = ALL_CHAT_ROOMS.find(r => r.id === m.subject);
+      
+      const allRooms = [...state.userRooms, ...(state.dmRooms || [])];
+      const roomDef = allRooms.find(r => r.id === m.subject || r.id === state.currentRoomId);
       const subjectColor = SUBJECT_COLORS[roomDef ? roomDef.subject : 'General'] || '#64748B';
       const searchText = escapeHtml(((m.sender || '') + ' ' + (m.text || '')).toLowerCase());
 
@@ -1708,7 +1766,10 @@
         }
 
         const isMe = state.currentUser && m.sender === state.currentUser.nickname;
-        const canDelete = state.currentUser && state.currentUser.isAdmin;
+        
+        // Allowed to delete if user is admin OR if it is their own message
+        const canDelete = (state.currentUser && state.currentUser.isAdmin) || isMe;
+        
         const isPinned = m.pinned && (now - (m.pinnedAt || 0) < 86400000);
         const senderKey = m.senderKey || (m.sender ? m.sender.replace(/[.#$[\]]/g, "_") : '');
         const isNew = !state.knownMsgKeys[key] && !isFirstRenderThisRoom;
@@ -1743,7 +1804,6 @@
       }
       state.lastFeedCount = msgEntries.length;
 
-      // Re-apply active search filter (if any) to the freshly rendered messages
       const searchInput = document.getElementById('searchInput');
       if (searchInput && searchInput.value) filterMessages(searchInput.value);
     }
@@ -1760,41 +1820,15 @@
           if (!items) return;
           for (const item of items) {
             if (item.type && item.type.startsWith('image/')) {
-              const file = item.getAsFile();
-              if (file) { e.preventDefault(); processSelectedFile(file); }
+              e.preventDefault();
+              processSelectedFile(item.getAsFile());
+              return;
             }
           }
         });
       }
-
-      const dropZone = document.getElementById('rightPane');
-      if (dropZone) {
-        ['dragover', 'dragenter'].forEach(evt => dropZone.addEventListener(evt, e => {
-          e.preventDefault();
-          dropZone.classList.add('ring-2', 'ring-waGreen');
-        }));
-        ['dragleave', 'drop'].forEach(evt => dropZone.addEventListener(evt, e => {
-          e.preventDefault();
-          dropZone.classList.remove('ring-2', 'ring-waGreen');
-        }));
-        dropZone.addEventListener('drop', e => {
-          const file = e.dataTransfer.files && e.dataTransfer.files[0];
-          if (file) processSelectedFile(file);
-        });
-      }
-
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') {
-          closeProfileModal();
-          closeSolvingModal();
-          closeModal();
-          const sb = document.getElementById('searchBar');
-          if (sb && !sb.classList.contains('hidden')) toggleSearchBar();
-        }
-      });
+      checkLocalLogin();
     });
-
-    checkLocalLogin();
   </script>
 </body>
 </html>
